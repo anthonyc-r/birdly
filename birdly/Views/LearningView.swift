@@ -22,43 +22,86 @@ struct LearningView: View {
         return flashcards[currentCardIndex]
     }
     
+    private var overallProgress: Double {
+        guard !topic.birds.isEmpty else { return 0.0 }
+        let totalProgress = topic.birds.reduce(0.0) { $0 + $1.completionPercentage }
+        return totalProgress / Double(topic.birds.count) / 100.0 // Convert to 0.0-1.0 range
+    }
+    
     var body: some View {
+        @Bindable var topic = topic
         ZStack {
-            if let card = currentCard {
-                Group {
-                    switch card.gameType {
-                    case .introduction:
-                        IntroductionGameView(
-                            bird: card.bird,
-                            onComplete: handleCardComplete
-                        )
-                        .id("intro-\(currentCardIndex)-\(card.bird.id)")
-                    case .multipleChoice:
-                        MultipleChoiceGameView(
-                            correctBird: card.bird,
-                            introducedBirds: introducedBirds,
-                            allBirds: topic.birds,
-                            onComplete: handleCardComplete
-                        )
-                        .id("mc-\(currentCardIndex)-\(card.bird.id)")
+                if let card = currentCard {
+                    Group {
+                        switch card.gameType {
+                        case .introduction:
+                            IntroductionGameView(
+                                bird: card.bird,
+                                onComplete: handleCardComplete
+                            )
+                            .id("intro-\(currentCardIndex)-\(card.bird.id)")
+                        case .multipleChoice:
+                            MultipleChoiceGameView(
+                                correctBird: card.bird,
+                                introducedBirds: introducedBirds,
+                                allBirds: topic.birds,
+                                onComplete: handleCardComplete
+                            )
+                            .id("mc-\(currentCardIndex)-\(card.bird.id)")
+                        case .wordSearch:
+                            WordSearchGameView(
+                                bird: card.bird,
+                                onComplete: handleCardComplete
+                            )
+                            .id("ws-\(currentCardIndex)-\(card.bird.id)")
+                        }
                     }
-                }
-            } else {
-                // All cards completed
-                VStack(spacing: Style.Dimensions.largeMargin) {
-                    Text("Great job!")
-                        .font(Style.Font.h1.weight(.bold))
-                    Text("You've completed this learning session")
-                        .font(Style.Font.b2)
-                        .foregroundColor(.secondary)
-                    Button("Done") {
-                        dismiss()
+                } else {
+                    // All cards completed
+                    VStack(spacing: Style.Dimensions.largeMargin) {
+                        Text("Great job!")
+                            .font(Style.Font.h1.weight(.bold))
+                        Text("You've completed this learning session")
+                            .font(Style.Font.b2)
+                            .foregroundColor(.secondary)
+                        Button("Done") {
+                            dismiss()
+                        }
+                        .buttonStyle(Style.Button.primary)
                     }
-                    .buttonStyle(Style.Button.primary)
+                    .padding(Style.Dimensions.margin)
                 }
-                .padding(Style.Dimensions.margin)
+        }
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                VStack(spacing: 4) {
+                    // Progress percentage
+                    Text("\(Int(overallProgress * 100))%")
+                        .font(Style.Font.b3.weight(.semibold))
+                        .foregroundColor(.primary)
+                    
+                    // Progress bar
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            // Background track
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(height: 4)
+                            
+                            // Progress fill
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(Color.accentColor)
+                                .frame(width: geometry.size.width * overallProgress, height: 4)
+                                .animation(.easeInOut(duration: 0.3), value: overallProgress)
+                        }
+                    }
+                    .frame(height: 4)
+                    .frame(maxWidth: 200)
+                }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             setupFlashcards()
         }
@@ -81,10 +124,13 @@ struct LearningView: View {
         let introducedBirdsList = currentTopic.birds.filter { $0.completionPercentage > 0 }
         let newBirds = currentTopic.birds.filter { $0.completionPercentage == 0 }
         
-        // Add multiple choice games for introduced birds (if we have at least 2 introduced)
+        // Add practice games for introduced birds, weighted by mastery level
+        // Higher mastery = more word search, lower mastery = more multiple choice
         if canPlayMultipleChoice {
             for bird in introducedBirdsList {
-                cards.append(Flashcard(bird: bird, gameType: .multipleChoice))
+                if let gameType = bird.selectGameTypeForMastery() {
+                    cards.append(Flashcard(bird: bird, gameType: gameType))
+                }
             }
         }
         
@@ -105,13 +151,15 @@ struct LearningView: View {
         
         // Add introduction games for new birds to introduce
         for (index, bird) in newBirds.prefix(newBirdsToIntroduce).enumerated() {
-            cards.append(Flashcard(bird: bird, gameType: .introduction))
+            if let gameType = bird.selectGameTypeForMastery() {
+                cards.append(Flashcard(bird: bird, gameType: gameType))
+            }
         }
         
         // Shuffle the deck, but prioritize new introductions first
         let introductionCards = cards.filter { $0.gameType == .introduction }
-        let multipleChoiceCards = cards.filter { $0.gameType == .multipleChoice }
-        flashcards = introductionCards + multipleChoiceCards.shuffled()
+        let practiceCards = cards.filter { $0.gameType == .multipleChoice || $0.gameType == .wordSearch }
+        flashcards = introductionCards + practiceCards.shuffled()
         currentCardIndex = 0
     }
     
@@ -137,10 +185,21 @@ struct LearningView: View {
                     // Wrong answer: decrease by 5%, but don't go below 1%
                     bird.completionPercentage = max(1.0, bird.completionPercentage - 5.0)
                 }
+            case .wordSearch:
+                // Word search: increase/decrease based on correctness
+                if wasCorrect {
+                    // Correct answer: increase by 12-18%, cap at 100%
+                    let increase = Double.random(in: 12...18)
+                    bird.completionPercentage = min(100.0, bird.completionPercentage + increase)
+                } else {
+                    // Wrong answer: decrease by 3%, but don't go below 1%
+                    bird.completionPercentage = max(1.0, bird.completionPercentage - 3.0)
+                }
             }
         }
         
-        // SwiftData automatically saves changes, but we can force a save for immediate persistence
+        // Force SwiftData to save and notify observers immediately
+        // This ensures the progress bar updates in real-time
         do {
             try modelContext.save()
         } catch {

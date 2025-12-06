@@ -17,6 +17,7 @@ struct MultipleChoiceGameView: View {
     @State private var showResult = false
     @State private var wasCorrect = false
     @State private var shuffledOptions: [Bird] = []
+    @State private var completionTask: Task<Void, Never>?
     
     private func setupOptions() {
         // Get a random wrong bird from introduced birds (excluding the correct one)
@@ -63,8 +64,14 @@ struct MultipleChoiceGameView: View {
                                 }
                                 
                                 // Auto-advance after showing result
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                    onComplete(correctBird.id, wasCorrect)
+                                // Cancel any existing task first
+                                completionTask?.cancel()
+                                completionTask = Task {
+                                    try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+                                    // Check if task was cancelled or view is still valid
+                                    if !Task.isCancelled {
+                                        onComplete(correctBird.id, wasCorrect)
+                                    }
                                 }
                             }
                         }
@@ -85,6 +92,11 @@ struct MultipleChoiceGameView: View {
         }
         .onAppear {
             setupOptions()
+        }
+        .onDisappear {
+            // Cancel any pending completion task when view disappears
+            completionTask?.cancel()
+            completionTask = nil
         }
     }
 }

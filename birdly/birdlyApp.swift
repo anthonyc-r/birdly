@@ -14,6 +14,6 @@ struct birdlyApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [Topic.self, Bird.self])
+        .modelContainer(for: [Topic.self, Bird.self, User.self])
     }
 }

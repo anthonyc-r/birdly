@@ -10,6 +10,7 @@ import Foundation
 enum GameType {
     case introduction
     case multipleChoice
+    case wordSearch
 }
 
 

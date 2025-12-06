@@ -20,15 +20,13 @@ struct DiscoverView: View {
     var body: some View {
         @Bindable var nav = navigationModel
         NavigationStack(path: $nav.path) {
-            ZStack {
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: Style.Dimensions.margin) {
-                        ForEach(topics) { topic in
-                            CategoryTileView(topic: topic)
-                        }
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: Style.Dimensions.margin) {
+                    ForEach(topics) { topic in
+                        CategoryTileView(topic: topic)
                     }
-                    .padding(Style.Dimensions.margin)
                 }
+                .padding(Style.Dimensions.margin)
             }
             .navigationDestination(for: Topic.self) { topic in
                 LearningView(topic: topic)
