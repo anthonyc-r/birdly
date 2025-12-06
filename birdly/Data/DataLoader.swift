@@ -44,6 +44,7 @@ private struct DataModelData: Codable {
 }
 
 enum DataLoader {
+    /// Seeds initial data if the database is empty
     static func seedData(into context: ModelContext) throws {
         guard let url = Bundle.main.url(forResource: "birdlyData", withExtension: "json") else {
             throw DataLoaderError.fileNotFound
@@ -139,6 +140,175 @@ enum DataLoader {
             )
             
             context.insert(topic)
+        }
+        
+        try context.save()
+    }
+    
+    /// Updates the data store based on the latest JSON file, preserving user progress
+    /// - Adds new topics and birds
+    /// - Updates existing topics and birds metadata
+    /// - Preserves completion percentages and user progress
+    static func updateData(into context: ModelContext) throws {
+        guard let url = Bundle.main.url(forResource: "birdlyData", withExtension: "json") else {
+            throw DataLoaderError.fileNotFound
+        }
+        
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        let dataModel = try decoder.decode(DataModelData.self, from: data)
+        
+        // Fetch existing data
+        let descriptor = FetchDescriptor<Topic>()
+        let existingTopics = try context.fetch(descriptor)
+        let existingTopicsById = Dictionary(uniqueKeysWithValues: existingTopics.map { ($0.id, $0) })
+        
+        // Process each topic from JSON
+        for topicData in dataModel.topics {
+            // Find or create topic
+            let topic: Topic
+            if let existingTopic = existingTopicsById[topicData.id] {
+                topic = existingTopic
+                // Update topic metadata
+                topic.title = topicData.title
+                topic.subtitle = topicData.subtitle
+                
+                // Update image source
+                let imageSource: ImageSource
+                if let source = topicData.imageSource {
+                    imageSource = source
+                } else if let imageName = topicData.imageName {
+                    imageSource = .asset(name: imageName)
+                } else {
+                    imageSource = .asset(name: "bird")
+                }
+                topic.imageSource = imageSource
+            } else {
+                // Create new topic
+                let imageSource: ImageSource
+                if let source = topicData.imageSource {
+                    imageSource = source
+                } else if let imageName = topicData.imageName {
+                    imageSource = .asset(name: imageName)
+                } else {
+                    imageSource = .asset(name: "bird")
+                }
+                
+                topic = Topic(
+                    id: topicData.id,
+                    title: topicData.title,
+                    subtitle: topicData.subtitle,
+                    imageSource: imageSource,
+                    birds: []
+                )
+                context.insert(topic)
+            }
+            
+            // Process birds for this topic
+            // Fetch all birds to check if they exist elsewhere
+            let birdDescriptor = FetchDescriptor<Bird>()
+            let allBirds = try context.fetch(birdDescriptor)
+            let allBirdsById = Dictionary(uniqueKeysWithValues: allBirds.map { ($0.id, $0) })
+            let existingBirdsInTopicIds = Set(topic.birds.map { $0.id })
+            
+            for birdData in topicData.birds {
+                // Find or create bird
+                let bird: Bird
+                if let existingBird = allBirdsById[birdData.id] {
+                    bird = existingBird
+                    // Update bird metadata but preserve progress
+                    bird.name = birdData.name
+                    bird.scientificName = birdData.scientificName
+                    bird.birdDescription = birdData.description
+                    // Preserve isIdentified state (don't overwrite user progress)
+                    
+                    // Ensure bird is linked to this topic (both directions)
+                    if !existingBirdsInTopicIds.contains(birdData.id) {
+                        bird.topic = topic
+                        // Also explicitly add to topic's birds array to ensure relationship
+                        if !topic.birds.contains(where: { $0.id == bird.id }) {
+                            topic.birds.append(bird)
+                        }
+                    }
+                } else {
+                    // Create new bird
+                    bird = Bird(
+                        id: birdData.id,
+                        name: birdData.name,
+                        scientificName: birdData.scientificName,
+                        description: birdData.description,
+                        images: [],
+                        isIdentified: birdData.isIdentified ?? false
+                    )
+                    // Set relationship both ways
+                    bird.topic = topic
+                    topic.birds.append(bird)
+                    context.insert(bird)
+                }
+                
+                // Process images for this bird
+                let existingImagesById = Dictionary(uniqueKeysWithValues: bird.images.map { ($0.id, $0) })
+                
+                if let imagesData = birdData.images, !imagesData.isEmpty {
+                    // New format: multiple images
+                    for imageData in imagesData {
+                        if let existingImage = existingImagesById[imageData.id] {
+                            // Update image source but preserve completion percentage
+                            let imageSource: ImageSource
+                            if let source = imageData.imageSource {
+                                imageSource = source
+                            } else if let imageName = imageData.imageName {
+                                imageSource = .asset(name: imageName)
+                            } else {
+                                imageSource = .asset(name: "bird")
+                            }
+                            existingImage.imageSource = imageSource
+                            existingImage.variant = imageData.variant
+                            // Preserve completionPercentage - don't overwrite user progress
+                        } else {
+                            // Create new image
+                            let imageSource: ImageSource
+                            if let source = imageData.imageSource {
+                                imageSource = source
+                            } else if let imageName = imageData.imageName {
+                                imageSource = .asset(name: imageName)
+                            } else {
+                                imageSource = .asset(name: "bird")
+                            }
+                            
+                            let newImage = BirdImage(
+                                id: imageData.id,
+                                variant: imageData.variant,
+                                imageSource: imageSource,
+                                completionPercentage: imageData.completionPercentage ?? 0.0
+                            )
+                            newImage.bird = bird
+                            context.insert(newImage)
+                        }
+                    }
+                } else {
+                    // Legacy format: single image - only create if no images exist
+                    if bird.images.isEmpty {
+                        let birdImageSource: ImageSource
+                        if let source = birdData.imageSource {
+                            birdImageSource = source
+                        } else if let imageName = birdData.imageName {
+                            birdImageSource = .asset(name: imageName)
+                        } else {
+                            birdImageSource = .asset(name: "bird")
+                        }
+                        
+                        let image = BirdImage(
+                            id: UUID(),
+                            variant: "default",
+                            imageSource: birdImageSource,
+                            completionPercentage: birdData.completionPercentage ?? 0.0
+                        )
+                        image.bird = bird
+                        context.insert(image)
+                    }
+                }
+            }
         }
         
         try context.save()

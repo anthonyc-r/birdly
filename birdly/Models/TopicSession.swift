@@ -75,15 +75,9 @@ class TopicSession: ObservableObject {
             return false
         }
         
-        guard topicProgress < 0.5 else {
-            // Past 50%: no more new introductions
-            return false
-        }
-        
-        // Within first 50% of mastery: gradually introduce new birds
         // Calculate how many birds should be introduced by this progress point
         let totalBirds = topic.birds.count
-        let targetIntroducedCount = Int(ceil(Double(totalBirds) * (topicProgress / 0.5)))
+        let targetIntroducedCount = Int(ceil(Double(totalBirds) * (topicProgress / 0.3)))
         let currentIntroducedCount = introducedBirds.count
         
         // If we haven't reached the target, introduce new birds
@@ -93,8 +87,8 @@ class TopicSession: ObservableObject {
             let introduceProbability = 0.3 + (0.5 * (1.0 - progressRatio)) // 0.8 to 0.3
             return Double.random(in: 0...1) < introduceProbability
         } else {
-            // We've reached the target, ensure all birds are introduced
-            return currentIntroducedCount < totalBirds
+            // We've reached the target
+            return false
         }
     }
     

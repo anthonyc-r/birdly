@@ -56,13 +56,17 @@ struct ContentView: View {
         // Load user data
         loadUser()
         
-        // Seed initial data if database is empty
-        if topics.isEmpty {
-            do {
+        // Seed or update data from JSON
+        do {
+            if topics.isEmpty {
+                // First time: seed initial data
                 try DataLoader.seedData(into: modelContext)
-            } catch {
-                print("Failed to seed data: \(error)")
+            } else {
+                // Update existing data with latest from JSON (preserves user progress)
+                try DataLoader.updateData(into: modelContext)
             }
+        } catch {
+            print("Failed to load/update data: \(error)")
         }
         
         // Ensure loading screen shows for at least 2 seconds

@@ -218,7 +218,7 @@ struct InProgressTopicCard: View {
                         .font(Style.Font.b2.weight(.semibold))
                         .foregroundColor(.primary)
                         .lineLimit(2)
-                    
+                    Spacer(minLength: 0)
                     Text("\(progressPercentage)% complete")
                         .font(Style.Font.b4)
                         .foregroundColor(.secondary)
