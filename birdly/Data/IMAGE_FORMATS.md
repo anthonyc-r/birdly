@@ -52,3 +52,4 @@ The component automatically handles:
 - Asset catalog images (instant loading)
 - URL images (async loading with loading states and error handling)
 
+

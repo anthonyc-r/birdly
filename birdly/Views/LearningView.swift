@@ -32,6 +32,7 @@ struct LearningView: View {
                             bird: card.bird,
                             onComplete: handleCardComplete
                         )
+                        .id("intro-\(currentCardIndex)-\(card.bird.id)")
                     case .multipleChoice:
                         MultipleChoiceGameView(
                             correctBird: card.bird,
@@ -39,6 +40,7 @@ struct LearningView: View {
                             allBirds: topic.birds,
                             onComplete: handleCardComplete
                         )
+                        .id("mc-\(currentCardIndex)-\(card.bird.id)")
                     }
                 }
             } else {
@@ -109,7 +111,7 @@ struct LearningView: View {
         // Shuffle the deck, but prioritize new introductions first
         let introductionCards = cards.filter { $0.gameType == .introduction }
         let multipleChoiceCards = cards.filter { $0.gameType == .multipleChoice }
-        flashcards = (introductionCards + multipleChoiceCards.shuffled()).shuffled()
+        flashcards = introductionCards + multipleChoiceCards.shuffled()
         currentCardIndex = 0
     }
     

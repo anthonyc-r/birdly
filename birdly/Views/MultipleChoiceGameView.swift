@@ -16,21 +16,20 @@ struct MultipleChoiceGameView: View {
     @State private var selectedAnswer: UUID?
     @State private var showResult = false
     @State private var wasCorrect = false
+    @State private var shuffledOptions: [Bird] = []
     
-    private var wrongBird: Bird? {
+    private func setupOptions() {
         // Get a random wrong bird from introduced birds (excluding the correct one)
         let wrongOptions = allBirds.filter { 
             $0.id != correctBird.id && introducedBirds.contains($0.id)
         }
-        return wrongOptions.randomElement()
-    }
-    
-    private var shuffledOptions: [Bird] {
+        
         // If we don't have enough introduced birds, just show the correct answer
-        guard let wrong = wrongBird else {
-            return [correctBird]
+        if let wrong = wrongOptions.randomElement() {
+            shuffledOptions = [correctBird, wrong].shuffled()
+        } else {
+            shuffledOptions = [correctBird]
         }
-        return [correctBird, wrong].shuffled()
     }
     
     var body: some View {
@@ -83,6 +82,9 @@ struct MultipleChoiceGameView: View {
                 }
             }
             .padding(Style.Dimensions.margin)
+        }
+        .onAppear {
+            setupOptions()
         }
     }
 }
