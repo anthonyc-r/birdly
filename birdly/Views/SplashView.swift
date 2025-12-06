@@ -17,7 +17,7 @@ struct SplashView: View {
                 .font(Style.Font.h1.weight(.bold))
                 .multilineTextAlignment(.leading)
             Text("Your pocket guide to the birds around you.")
-                .font(Style.Font.b1.weight(.medium))
+                .font(Style.Font.h3.weight(.medium))
                 .multilineTextAlignment(.leading)
             Button(action: {
                 withAnimation {

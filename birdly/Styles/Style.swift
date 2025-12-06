@@ -17,10 +17,10 @@ enum Style {
     }
     enum Font {
         static let h1 = size(32)
-        static let h2 = size(28)
-        static let h3 = size(26)
+        static let h2 = size(26)
+        static let h3 = size(24)
         
-        static let b1 = size(24)
+        static let b1 = size(22)
         static let b2 = size(18)
         static let b3 = size(16)
         static let b4 = size(14)

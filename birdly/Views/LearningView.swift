@@ -22,12 +22,6 @@ struct LearningView: View {
         return flashcards[currentCardIndex]
     }
     
-    private var overallProgress: Double {
-        guard !topic.birds.isEmpty else { return 0.0 }
-        let totalProgress = topic.birds.reduce(0.0) { $0 + $1.completionPercentage }
-        return totalProgress / Double(topic.birds.count) / 100.0 // Convert to 0.0-1.0 range
-    }
-    
     var body: some View {
         @Bindable var topic = topic
         ZStack {
@@ -80,7 +74,7 @@ struct LearningView: View {
             ToolbarItem(placement: .principal) {
                 VStack(spacing: 4) {
                     // Progress percentage
-                    Text("\(Int(overallProgress * 100))%")
+                    Text("\(Int(topic.progress * 100))%")
                         .font(Style.Font.b3.weight(.semibold))
                         .foregroundColor(.primary)
                     
@@ -95,8 +89,8 @@ struct LearningView: View {
                             // Progress fill
                             RoundedRectangle(cornerRadius: 2)
                                 .fill(Color.accentColor)
-                                .frame(width: geometry.size.width * overallProgress, height: 4)
-                                .animation(.easeInOut(duration: 0.3), value: overallProgress)
+                                .frame(width: geometry.size.width * topic.progress, height: 4)
+                                .animation(.easeInOut(duration: 0.3), value: topic.progress)
                         }
                     }
                     .frame(height: 4)
@@ -232,7 +226,6 @@ struct LearningView: View {
         id: UUID(),
         title: "Common Garden Birds",
         subtitle: "Learn to identify the birds you see in your garden",
-        progress: 0.0,
         imageSource: .asset(name: "bird"),
         birds: [
             Bird(

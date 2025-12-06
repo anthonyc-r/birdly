@@ -33,7 +33,7 @@ private struct TopicData: Codable {
     let id: UUID
     let title: String
     let subtitle: String
-    let progress: Double
+    let progress: Double? // Legacy field, no longer used (progress is now computed)
     let imageSource: ImageSource?
     let imageName: String? // For backward compatibility
     let birds: [BirdData]
@@ -134,7 +134,6 @@ enum DataLoader {
                 id: topicData.id,
                 title: topicData.title,
                 subtitle: topicData.subtitle,
-                progress: topicData.progress,
                 imageSource: imageSource,
                 birds: birds
             )
