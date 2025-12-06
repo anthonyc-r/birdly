@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EAD51ADC2EE46B80002CCD7A /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = EAC18B042ED8DA4F00A88F82 /* Lottie */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		EAC18AF42ED8DA4E00A88F81 /* birdly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = birdly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAD51ADC2EE46B80002CCD7A /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,13 +100,13 @@
 			);
 			mainGroup = EAC18AEB2ED8DA4E00A88F81;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EAC18B052ED8DA4F00A88F82 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EAC18AF52ED8DA4E00A88F81 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			packageReferences = (
-				EAC18B052ED8DA4F00A88F82 /* XCRemoteSwiftPackageReference "lottie-ios" */,
-			);
 			targets = (
 				EAC18AF32ED8DA4E00A88F81 /* birdly */,
 			);

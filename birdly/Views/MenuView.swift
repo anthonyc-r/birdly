@@ -17,7 +17,7 @@ struct MenuView: View {
                 DiscoverView()
             }
             Tab("Bird Log", systemImage: "book.fill", value: .birdLog) {
-                Text("Bird Log")
+                BirdLogView()
             }
             Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
                 
