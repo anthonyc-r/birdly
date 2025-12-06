@@ -18,13 +18,13 @@ enum GameType: CaseIterable {
     var requiredMastery: Double {
         switch self {
         case .multipleChoice:
-            return 0.01 // 0.01% (essentially 0, but > 0)
+            return 5.0
         case .letterSelection:
-            return 40.0 // 40%
+            return 40.0
         case .wordSearch:
-            return 40.0 // 40%
+            return 40.0
         case .trueFalse:
-            return 20.0 // 20%
+            return 0.01 // Non-zero to ensure it's always available post-introduction
         default:
             return 0.0
         }
