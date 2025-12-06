@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct DiscoverView: View {
     @Environment(NavigationModel.self) private var navigationModel
-    @Environment(DataModel.self) private var dataModel
+    @Query(sort: \Topic.title) private var topics: [Topic]
     
     private let columns = [
         GridItem(.flexible(), spacing: Style.Dimensions.margin),
@@ -22,7 +23,7 @@ struct DiscoverView: View {
             ZStack {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: Style.Dimensions.margin) {
-                        ForEach(dataModel.topics, id: \.id) { topic in
+                        ForEach(topics) { topic in
                             CategoryTileView(topic: topic)
                         }
                     }
@@ -79,25 +80,27 @@ struct CategoryTileView: View {
 }
 
 #Preview {
-    let dataModel = DataModel()
-    dataModel.topics = [
-        Topic(
-            id: UUID(),
-            title: "Common Garden Birds",
-            subtitle: "Learn to identify the birds you see in your garden",
-            progress: 0.0,
-            imageSource: .asset(name: "bird")
-        ),
-        Topic(
-            id: UUID(),
-            title: "Woodland Birds",
-            subtitle: "Discover birds found in forests and woodlands",
-            progress: 0.3,
-            imageSource: .asset(name: "bird")
-        )
-    ]
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: Topic.self, Bird.self, configurations: config)
+    
+    let topic1 = Topic(
+        id: UUID(),
+        title: "Common Garden Birds",
+        subtitle: "Learn to identify the birds you see in your garden",
+        progress: 0.0,
+        imageSource: .asset(name: "bird")
+    )
+    let topic2 = Topic(
+        id: UUID(),
+        title: "Woodland Birds",
+        subtitle: "Discover birds found in forests and woodlands",
+        progress: 0.3,
+        imageSource: .asset(name: "bird")
+    )
+    container.mainContext.insert(topic1)
+    container.mainContext.insert(topic2)
     
     return DiscoverView()
         .environment(NavigationModel.shared)
-        .environment(dataModel)
+        .modelContainer(container)
 }

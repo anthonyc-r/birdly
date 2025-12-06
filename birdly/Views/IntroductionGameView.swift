@@ -35,7 +35,7 @@ struct IntroductionGameView: View {
                     
                     // Description
                     if showDetails {
-                        Text(bird.description)
+                        Text(bird.birdDescription)
                             .font(Style.Font.b3)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
