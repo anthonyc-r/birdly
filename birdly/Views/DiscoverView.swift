@@ -60,11 +60,13 @@ struct CategoryTileView: View {
                         Text(topic.title)
                             .font(Style.Font.b2.weight(.semibold))
                             .foregroundColor(.white)
+                            .multilineTextAlignment(.leading)
                             .lineLimit(2)
                         
                         Text(topic.subtitle)
                             .font(Style.Font.b4)
                             .foregroundColor(.white.opacity(0.9))
+                            .multilineTextAlignment(.leading)
                             .lineLimit(2)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
