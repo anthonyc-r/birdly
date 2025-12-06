@@ -50,4 +50,9 @@ final class Topic {
             bird.topic = self
         }
     }
+    
+    /// Creates a new TopicSession for this topic
+    func createSession() -> TopicSession {
+        return TopicSession(topic: self)
+    }
 }

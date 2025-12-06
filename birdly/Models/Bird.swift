@@ -55,6 +55,10 @@ final class Bird {
         return images.filter { $0.variant != "perched" }
     }
     
+    var isIntroduced: Bool {
+        return completionPercentage > 0
+    }
+    
     var isIdentified: Bool = false
     // Legacy: average completion across all images (read-only computed property)
     var completionPercentage: Double {
