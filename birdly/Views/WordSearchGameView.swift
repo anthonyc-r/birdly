@@ -22,10 +22,24 @@ struct WordSearchGameView: View {
     @State private var hasStartedInteraction = false
     @State private var cellPositions: [GridPosition: CGPoint] = [:]
     @State private var incorrectAttempts = 0
+    @State private var gridSize: Int = 5
+    @State private var isGenerating = true
     
-    private let gridSize = 5
-    private let cellSize: CGFloat = 50
     private let cellSpacing: CGFloat = 8
+    private let maxGridSize = 10 // Maximum grid size to prevent UI from getting too large
+    private let generationAttemptThreshold = 100 // Threshold before increasing grid size
+    
+    // Dynamic cell size based on grid size - smaller cells for larger grids
+    private var cellSize: CGFloat {
+        // Scale down cell size as grid gets larger to keep UI reasonable
+        if gridSize <= 5 {
+            return 50
+        } else if gridSize <= 7 {
+            return 42
+        } else {
+            return 36
+        }
+    }
     
     struct GridPosition: Hashable {
         let row: Int
@@ -51,8 +65,15 @@ struct WordSearchGameView: View {
                 
                 // Word search grid
                 ZStack {
+                    if isGenerating {
+                        // Loading indicator
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .tint(.accentColor)
+                    }
+                    
                     // Draw lines connecting selected cells
-                    if !selectedPath.isEmpty && !cellPositions.isEmpty {
+                    if !selectedPath.isEmpty && !cellPositions.isEmpty && !isGenerating {
                         Path { path in
                             for (index, position) in selectedPath.enumerated() {
                                 if let point = cellPositions[position] {
@@ -68,43 +89,84 @@ struct WordSearchGameView: View {
                     }
                     
                     // Grid of circular letters
-                    VStack(spacing: cellSpacing) {
-                        ForEach(0..<gridSize, id: \.self) { row in
-                            HStack(spacing: cellSpacing) {
-                                ForEach(0..<gridSize, id: \.self) { col in
-                                    let position = GridPosition(row: row, col: col)
-                                    let isSelected = selectedCells.contains(position)
-                                    let isPartOfWord = isCellPartOfWord(position)
-                                    
-                                    Text(String(grid[safe: row]?[safe: col] ?? " "))
-                                        .font(.system(size: 22, weight: .semibold, design: .rounded))
-                                        .frame(width: cellSize, height: cellSize)
-                                        .background(
-                                            Circle()
-                                                .fill(backgroundColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
-                                        )
-                                        .foregroundColor(textColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
-                                        .overlay(
-                                            Circle()
-                                                .stroke(borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord), lineWidth: isSelected ? 3 : 1.5)
-                                        )
-                                        .background(
-                                            GeometryReader { geometry in
-                                                Color.clear
-                                                    .preference(
-                                                        key: CellPositionKey.self,
-                                                        value: [position: CGPoint(
-                                                            x: geometry.frame(in: .named("grid")).midX,
-                                                            y: geometry.frame(in: .named("grid")).midY
-                                                        )]
-                                                    )
+                    if !isGenerating {
+                        VStack(spacing: cellSpacing) {
+                            ForEach(0..<gridSize, id: \.self) { row in
+                                HStack(spacing: cellSpacing) {
+                                    ForEach(0..<gridSize, id: \.self) { col in
+                                        let position = GridPosition(row: row, col: col)
+                                        let isSelected = selectedCells.contains(position)
+                                        let isPartOfWord = isCellPartOfWord(position)
+                                        
+                                        Text(String(grid[safe: row]?[safe: col] ?? " "))
+                                            .font(.system(size: 22, weight: .semibold, design: .rounded))
+                                            .frame(width: cellSize, height: cellSize)
+                                            .background {
+                                                ZStack {
+                                                    // Base glass background
+                                                    Circle()
+                                                        .fill(.ultraThinMaterial)
+                                                        .opacity(0.7)
+                                                    
+                                                    // Color overlay based on state
+                                                    Circle()
+                                                        .fill(backgroundColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
+                                                    
+                                                    // Accent glow for selected state
+                                                    if isSelected && !isPartOfWord {
+                                                        Circle()
+                                                            .fill(
+                                                                LinearGradient(
+                                                                    gradient: Gradient(colors: [
+                                                                        Color.accentColor.opacity(0.4),
+                                                                        Color.accentColor.opacity(0.2)
+                                                                    ]),
+                                                                    startPoint: .topLeading,
+                                                                    endPoint: .bottomTrailing
+                                                                )
+                                                            )
+                                                    }
+                                                }
                                             }
-                                        )
+                                            .foregroundColor(textColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(
+                                                        LinearGradient(
+                                                            gradient: Gradient(colors: [
+                                                                borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.9),
+                                                                borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.5)
+                                                            ]),
+                                                            startPoint: .topLeading,
+                                                            endPoint: .bottomTrailing
+                                                        ),
+                                                        lineWidth: isSelected ? 3 : 1.5
+                                                    )
+                                            )
+                                            .shadow(
+                                                color: borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.4),
+                                                radius: isSelected ? 6 : 3,
+                                                x: 0,
+                                                y: 2
+                                            )
+                                            .background(
+                                                GeometryReader { geometry in
+                                                    Color.clear
+                                                        .preference(
+                                                            key: CellPositionKey.self,
+                                                            value: [position: CGPoint(
+                                                                x: geometry.frame(in: .named("grid")).midX,
+                                                                y: geometry.frame(in: .named("grid")).midY
+                                                            )]
+                                                        )
+                                                }
+                                            )
+                                    }
                                 }
                             }
                         }
+                        .coordinateSpace(name: "grid")
                     }
-                    .coordinateSpace(name: "grid")
                 }
                 .frame(
                     width: CGFloat(gridSize) * cellSize + CGFloat(gridSize - 1) * cellSpacing,
@@ -164,12 +226,13 @@ struct WordSearchGameView: View {
                             }
                         }
                 )
-                .disabled(incorrectAttempts >= 3)
+                .disabled(incorrectAttempts >= 3 || isGenerating)
                 .padding(Style.Dimensions.margin)
-                .background(
-                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                        .fill(Color(.systemBackground))
-                        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+                .shadow(
+                    color: Color.accentColor.opacity(0.2),
+                    radius: 10,
+                    x: 0,
+                    y: 4
                 )
                 .padding(.horizontal, Style.Dimensions.margin)
                 
@@ -188,7 +251,9 @@ struct WordSearchGameView: View {
             .padding(Style.Dimensions.margin)
         }
         .onAppear {
-            generateWordSearch()
+            Task(priority: .userInitiated) {
+                await generateWordSearch()
+            }
         }
         .onDisappear {
             completionTask?.cancel()
@@ -196,34 +261,95 @@ struct WordSearchGameView: View {
         }
     }
     
-    private func generateWordSearch() {
-        var word = bird.name.uppercased().replacingOccurrences(of: " ", with: "")
-        // Ensure word fits in grid
-        if word.count > gridSize * gridSize {
-            word = String(word.prefix(gridSize * gridSize))
-        }
-        let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    private func generateWordSearch() async {
+        let word = bird.name.uppercased().replacingOccurrences(of: " ", with: "")
+        let wordLength = word.count
+        let maxGridSize = self.maxGridSize
+        let generationAttemptThreshold = self.generationAttemptThreshold
         
-        // Initialize grid with random letters
-        grid = (0..<gridSize).map { _ in
-            (0..<gridSize).map { _ in
-                alphabet.randomElement() ?? "A"
+        // Run heavy computation on background thread
+        let result = await Task.detached(priority: .userInitiated) {
+            // Start with grid size 5
+            var currentGridSize = 5
+            
+            var success = false
+            var attempts = 0
+            let maxTotalAttempts = 3 // Maximum times to increase grid size
+            var generatedGrid: [[Character]] = []
+            var finalGridSize = 5
+            
+            while !success && attempts < maxTotalAttempts && currentGridSize <= maxGridSize {
+                // Ensure word fits in current grid
+                if wordLength > currentGridSize * currentGridSize {
+                    // Word is too long for this grid size, increase it
+                    currentGridSize = min(maxGridSize, currentGridSize + 2)
+                    attempts += 1
+                    continue
+                }
+                
+                let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                
+                // Initialize grid with random letters
+                generatedGrid = (0..<currentGridSize).map { _ in
+                    (0..<currentGridSize).map { _ in
+                        alphabet.randomElement() ?? "A"
+                    }
+                }
+                
+                // Generate a random walk path through the grid
+                let wordPath = Self.generateRandomWalkPath(
+                    wordLength: wordLength,
+                    gridSize: currentGridSize,
+                    maxAttempts: generationAttemptThreshold
+                )
+                
+                // Check if we got a complete path
+                if wordPath.count >= wordLength {
+                    // Place the word along the generated path
+                    for (index, position) in wordPath.enumerated() {
+                        if index < wordLength {
+                            let char = word[word.index(word.startIndex, offsetBy: index)]
+                            generatedGrid[position.row][position.col] = char
+                        }
+                    }
+                    finalGridSize = currentGridSize
+                    success = true
+                } else {
+                    // Path generation failed, try with larger grid
+                    currentGridSize = min(maxGridSize, currentGridSize + 2)
+                    attempts += 1
+                }
             }
-        }
-        
-        // Generate a random walk path through the grid
-        let wordPath = generateRandomWalkPath(wordLength: word.count)
-        
-        // Place the word along the generated path
-        for (index, position) in wordPath.enumerated() {
-            if index < word.count {
-                let char = word[word.index(word.startIndex, offsetBy: index)]
-                grid[position.row][position.col] = char
+            
+            // If still failed after all attempts, use fallback path
+            if !success {
+                let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                generatedGrid = (0..<finalGridSize).map { _ in
+                    (0..<finalGridSize).map { _ in
+                        alphabet.randomElement() ?? "A"
+                    }
+                }
+                let fallbackPath = Self.generateFallbackPath(wordLength: wordLength, gridSize: finalGridSize)
+                for (index, position) in fallbackPath.enumerated() {
+                    if index < wordLength {
+                        let char = word[word.index(word.startIndex, offsetBy: index)]
+                        generatedGrid[position.row][position.col] = char
+                    }
+                }
             }
+            
+            return (generatedGrid, finalGridSize)
+        }.value
+        
+        // Update UI on main thread
+        await MainActor.run {
+            grid = result.0
+            gridSize = result.1
+            isGenerating = false
         }
     }
     
-    private func generateRandomWalkPath(wordLength: Int) -> [GridPosition] {
+    private static func generateRandomWalkPath(wordLength: Int, gridSize: Int, maxAttempts: Int) -> [GridPosition] {
         // All 8 possible directions (including diagonals)
         let allDirections: [(Int, Int)] = [
             (-1, -1), (-1, 0), (-1, 1),  // Up-left, Up, Up-right
@@ -233,7 +359,6 @@ struct WordSearchGameView: View {
         
         var bestPath: [GridPosition] = []
         var attempts = 0
-        let maxAttempts = 100
         
         // Try multiple starting positions to find a good path
         while attempts < maxAttempts {
@@ -360,7 +485,7 @@ struct WordSearchGameView: View {
                     return Array(bestPath.prefix(wordLength))
                 } else {
                     // Try to extend from the last position
-                    let extended = extendPath(from: bestPath, targetLength: wordLength)
+                    let extended = Self.extendPath(from: bestPath, targetLength: wordLength, gridSize: gridSize)
                     if extended.count >= wordLength {
                         return Array(extended.prefix(wordLength))
                     }
@@ -368,10 +493,10 @@ struct WordSearchGameView: View {
             }
         
         // Fallback: create a simple snaking path if random walk fails
-        return generateFallbackPath(wordLength: wordLength)
+        return Self.generateFallbackPath(wordLength: wordLength, gridSize: gridSize)
     }
     
-    private func extendPath(from existingPath: [GridPosition], targetLength: Int) -> [GridPosition] {
+    private static func extendPath(from existingPath: [GridPosition], targetLength: Int, gridSize: Int) -> [GridPosition] {
         guard let lastPos = existingPath.last else { return existingPath }
         var path = existingPath
         var visited = Set(existingPath)
@@ -427,7 +552,7 @@ struct WordSearchGameView: View {
         return path
     }
     
-    private func generateFallbackPath(wordLength: Int) -> [GridPosition] {
+    private static func generateFallbackPath(wordLength: Int, gridSize: Int) -> [GridPosition] {
         var path: [GridPosition] = []
         var row = gridSize / 2
         var col = max(0, (gridSize - wordLength) / 2)
@@ -577,11 +702,11 @@ struct WordSearchGameView: View {
     
     private func backgroundColor(for position: GridPosition, isSelected: Bool, isPartOfWord: Bool) -> Color {
         if foundWord && isPartOfWord {
-            return Color.green.opacity(0.25)
+            return Color.green.opacity(0.3)
         } else if isSelected {
-            return Color.accentColor.opacity(0.15)
+            return Color.accentColor.opacity(0.2)
         }
-        return Color(.secondarySystemBackground)
+        return Color.clear
     }
     
     private func textColor(for position: GridPosition, isSelected: Bool, isPartOfWord: Bool) -> Color {

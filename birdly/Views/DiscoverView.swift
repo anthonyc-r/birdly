@@ -103,18 +103,45 @@ struct CategoryTileView: View {
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .clipped()
                     
-                    // Black to transparent gradient overlay from bottom
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]),
-                        startPoint: .bottom,
-                        endPoint: .top
-                    )
+                    // Gradient overlay with accent color hint
+                    ZStack {
+                        // Dark gradient from bottom
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.black.opacity(0.8),
+                                Color.black.opacity(0.4),
+                                Color.black.opacity(0.0)
+                            ]),
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
+                        
+                        // Accent color glow at bottom
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.accentColor.opacity(0.3),
+                                Color.clear
+                            ]),
+                            startPoint: .bottom,
+                            endPoint: .center
+                        )
+                    }
                     
-                    // Text overlay
+                    // Glass text overlay container
                     VStack(alignment: .leading, spacing: 4) {
+                        Spacer()
                         Text(topic.title)
                             .font(Style.Font.b2.weight(.semibold))
-                            .foregroundColor(.white)
+                            .foregroundStyle(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        .white,
+                                        .white.opacity(0.95)
+                                    ]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
                             .multilineTextAlignment(.leading)
                             .lineLimit(2)
                         
@@ -124,10 +151,51 @@ struct CategoryTileView: View {
                             .multilineTextAlignment(.leading)
                             .lineLimit(2)
                     }
+                    .padding(.horizontal, Style.Dimensions.smallMargin)
+                    .padding(.vertical, Style.Dimensions.margin)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(Style.Dimensions.margin)
+                    .background {
+                        // Glass effect for text container
+                        RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
+                            .fill(.ultraThinMaterial)
+                            .opacity(0.3)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
+                                    .stroke(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [
+                                                Color.accentColor.opacity(0.4),
+                                                Color.accentColor.opacity(0.1)
+                                            ]),
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        ),
+                                        lineWidth: 1
+                                    )
+                            )
+                    }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
+                        .stroke(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color.accentColor.opacity(0.3),
+                                    Color.accentColor.opacity(0.1)
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
+                )
+                .shadow(
+                    color: Color.accentColor.opacity(0.2),
+                    radius: 8,
+                    x: 0,
+                    y: 4
+                )
             }
             .aspectRatio(1.0, contentMode: .fit)
         }
@@ -162,23 +230,31 @@ struct InProgressTopicCard: View {
                 // Progress bar at the bottom
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
-                        // Background bar
+                        // Background bar with glass effect
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(Color.gray.opacity(0.2))
+                            .fill(Color.gray.opacity(0.15))
                         
-                        // Progress bar
+                        // Progress bar with accent gradient
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(Color.accentColor)
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.accentColor,
+                                        Color.accentColor.opacity(0.8)
+                                    ]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
                             .frame(width: geometry.size.width * CGFloat(topic.progress))
+                            .shadow(color: Color.accentColor.opacity(0.5), radius: 4, x: 0, y: 0)
                     }
                 }
                 .frame(height: 4)
                 .padding(.horizontal, Style.Dimensions.margin)
                 .padding(.bottom, Style.Dimensions.margin)
             }
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
-            .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+            .liquidGlassCard()
             .frame(width: 200)
         }
     }

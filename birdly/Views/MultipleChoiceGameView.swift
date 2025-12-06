@@ -35,62 +35,58 @@ struct MultipleChoiceGameView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: Style.Dimensions.largeMargin) {
-                // Question
-                Text("What bird is this?")
-                    .font(Style.Font.h2.weight(.semibold))
-                    .padding(.top, Style.Dimensions.largeMargin)
-                
-                // Bird image
-                BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
-                    .frame(maxHeight: 300)
-                    .padding(Style.Dimensions.margin)
-                
-                // Answer options
-                VStack(spacing: Style.Dimensions.margin) {
-                    ForEach(shuffledOptions) { bird in
-                        AnswerButton(
-                            bird: bird,
-                            isSelected: selectedAnswer == bird.id,
-                            isCorrect: showResult && bird.id == correctBird.id,
-                            isWrong: showResult && selectedAnswer == bird.id && bird.id != correctBird.id,
-                            isDisabled: showResult
-                        ) {
-                            if !showResult {
-                                selectedAnswer = bird.id
-                                wasCorrect = bird.id == correctBird.id
-                                withAnimation {
-                                    showResult = true
-                                }
-                                
-                                // Auto-advance after showing result
-                                // Cancel any existing task first
-                                completionTask?.cancel()
-                                completionTask = Task {
-                                    try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
-                                    // Check if task was cancelled or view is still valid
-                                    if !Task.isCancelled {
-                                        onComplete(correctBird.id, wasCorrect)
-                                    }
+        VStack(spacing: Style.Dimensions.largeMargin) {
+            // Question
+            Text("What bird is this?")
+                .font(Style.Font.h2.weight(.semibold))
+                .padding(.top, Style.Dimensions.largeMargin)
+            
+            // Bird image
+            BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
+                .frame(maxHeight: 300)
+                .padding(Style.Dimensions.margin)
+            Spacer()
+            // Answer options
+            VStack(spacing: Style.Dimensions.margin) {
+                ForEach(shuffledOptions) { bird in
+                    AnswerButton(
+                        bird: bird,
+                        isSelected: selectedAnswer == bird.id,
+                        isCorrect: showResult && bird.id == correctBird.id,
+                        isWrong: showResult && selectedAnswer == bird.id && bird.id != correctBird.id,
+                        isDisabled: showResult
+                    ) {
+                        if !showResult {
+                            selectedAnswer = bird.id
+                            wasCorrect = bird.id == correctBird.id
+                            withAnimation {
+                                showResult = true
+                            }
+                            
+                            // Auto-advance after showing result
+                            // Cancel any existing task first
+                            completionTask?.cancel()
+                            completionTask = Task {
+                                try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+                                // Check if task was cancelled or view is still valid
+                                if !Task.isCancelled {
+                                    onComplete(correctBird.id, wasCorrect)
                                 }
                             }
                         }
                     }
                 }
-                .padding(.horizontal, Style.Dimensions.margin)
-                
-                // Result message
-                if showResult {
-                    Text(wasCorrect ? "Correct! ✓" : "Not quite. This is a \(correctBird.name)")
-                        .font(Style.Font.b2)
-                        .foregroundColor(wasCorrect ? .green : .red)
-                        .padding(.top, Style.Dimensions.margin)
-                        .transition(.opacity)
-                }
             }
-            .padding(Style.Dimensions.margin)
+            .padding(.horizontal, Style.Dimensions.margin)
+            // Result message
+            Text(wasCorrect ? "Correct! ✓" : "Not quite. This is a \(correctBird.name)")
+                .font(Style.Font.b2)
+                .foregroundColor(wasCorrect ? .green : .red)
+                .padding(.top, Style.Dimensions.margin)
+                .transition(.opacity)
+                .opacity(showResult ? 1.0 : 0.0)
         }
+        .padding(Style.Dimensions.margin)
         .onAppear {
             setupOptions()
         }
@@ -115,38 +111,150 @@ struct AnswerButton: View {
             HStack {
                 Text(bird.name)
                     .font(Style.Font.b2.weight(.medium))
-                    .foregroundColor(buttonTextColor)
+                    .foregroundStyle(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                buttonTextColor,
+                                buttonTextColor.opacity(0.9)
+                            ]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
                 
                 Spacer()
                 
                 if isCorrect {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
+                        .foregroundStyle(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    .green,
+                                    .green.opacity(0.8)
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                 } else if isWrong {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.red)
+                        .foregroundStyle(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    .red,
+                                    .red.opacity(0.8)
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                 }
             }
             .padding(Style.Dimensions.margin)
-            .background(backgroundColor)
+            .background {
+                ZStack {
+                    // Base glass background with higher opacity
+                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
+                        .fill(.ultraThinMaterial)
+                        .opacity(0.85)
+                    
+                    // State-based color gradient overlay
+                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: stateGradientColors),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .opacity(stateGradientOpacity)
+                    
+                    // Shimmer effect for selected/correct/wrong states
+                    if isSelected || isCorrect || isWrong {
+                        RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.white.opacity(0.3),
+                                        Color.clear,
+                                        Color.white.opacity(0.1)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    }
+                }
+            }
             .overlay {
                 RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                    .stroke(borderColor, lineWidth: 2)
+                    .stroke(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                borderColor.opacity(0.9),
+                                borderColor.opacity(0.5),
+                                borderColor.opacity(0.3)
+                            ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: isSelected || isCorrect || isWrong ? 2.5 : 2
+                    )
             }
             .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+            .shadow(
+                color: borderColor.opacity(isSelected || isCorrect || isWrong ? 0.5 : 0.3),
+                radius: isSelected || isCorrect || isWrong ? 12 : 6,
+                x: 0,
+                y: isSelected || isCorrect || isWrong ? 4 : 2
+            )
         }
         .disabled(isDisabled)
     }
     
     private var backgroundColor: Color {
         if isCorrect {
-            return Color.green.opacity(0.2)
+            return Color.green.opacity(0.25)
         } else if isWrong {
-            return Color.red.opacity(0.2)
+            return Color.red.opacity(0.25)
         } else if isSelected {
-            return Color.accentColor.opacity(0.1)
+            return Color.accentColor.opacity(0.15)
         }
-        return Color.gray.opacity(0.1)
+        return Color.clear
+    }
+    
+    private var stateGradientColors: [Color] {
+        if isCorrect {
+            return [
+                Color.green.opacity(0.4),
+                Color.green.opacity(0.2),
+                Color.green.opacity(0.1)
+            ]
+        } else if isWrong {
+            return [
+                Color.red.opacity(0.4),
+                Color.red.opacity(0.2),
+                Color.red.opacity(0.1)
+            ]
+        } else if isSelected {
+            return [
+                Color.accentColor.opacity(0.5),
+                Color.accentColor.opacity(0.3),
+                Color.accentColor.opacity(0.2)
+            ]
+        }
+        return [
+            Color.accentColor.opacity(0.15),
+            Color.accentColor.opacity(0.08),
+            Color.accentColor.opacity(0.05)
+        ]
+    }
+    
+    private var stateGradientOpacity: Double {
+        if isCorrect || isWrong || isSelected {
+            return 1.0
+        }
+        return 0.6
     }
     
     private var borderColor: Color {
@@ -157,7 +265,7 @@ struct AnswerButton: View {
         } else if isSelected {
             return .accentColor
         }
-        return .gray.opacity(0.3)
+        return Color.accentColor.opacity(0.5)
     }
     
     private var buttonTextColor: Color {

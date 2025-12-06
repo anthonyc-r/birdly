@@ -51,6 +51,22 @@ struct LearningView: View {
                                 onComplete: handleCardComplete
                             )
                             .id("ws-\(currentCardIndex)-\(card.bird.id)-\(card.birdImage.id)")
+                        case .letterSelection:
+                            LetterSelectionGameView(
+                                bird: card.bird,
+                                birdImage: card.birdImage,
+                                onComplete: handleCardComplete
+                            )
+                            .id("ls-\(currentCardIndex)-\(card.bird.id)-\(card.birdImage.id)")
+                        case .trueFalse:
+                            TrueFalseGameView(
+                                correctBird: card.bird,
+                                birdImage: card.birdImage,
+                                introducedBirds: introducedBirds,
+                                allBirds: topic.birds,
+                                onComplete: handleCardComplete
+                            )
+                            .id("tf-\(currentCardIndex)-\(card.bird.id)-\(card.birdImage.id)")
                         }
                     }
                 } else {
@@ -157,7 +173,7 @@ struct LearningView: View {
         
         // Shuffle the deck, but prioritize new introductions first
         let introductionCards = cards.filter { $0.gameType == .introduction }
-        let practiceCards = cards.filter { $0.gameType == .multipleChoice || $0.gameType == .wordSearch }
+        let practiceCards = cards.filter { $0.gameType == .multipleChoice || $0.gameType == .wordSearch || $0.gameType == .letterSelection || $0.gameType == .trueFalse }
         flashcards = introductionCards + practiceCards.shuffled()
         currentCardIndex = 0
     }
@@ -171,8 +187,12 @@ struct LearningView: View {
             
             switch card.gameType {
             case .introduction:
-                // Introduction game: set initial completion for the image (marks as introduced)
-                image.completionPercentage = 5.0
+                // Introduction game: increase mastery when completed (marks as introduced)
+                if wasCorrect {
+                    // Increase by 5-8% to mark as introduced
+                    let increase = Double.random(in: 5...8)
+                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
+                }
                 introducedBirds.insert(birdId)
                 
             case .multipleChoice:
@@ -194,6 +214,26 @@ struct LearningView: View {
                 } else {
                     // Wrong answer: decrease by 3%, but don't go below 1%
                     image.completionPercentage = max(1.0, image.completionPercentage - 3.0)
+                }
+            case .letterSelection:
+                // Letter selection: increase/decrease based on correctness (per-image mastery)
+                if wasCorrect {
+                    // Correct answer: increase by 10-15%, cap at 100%
+                    let increase = Double.random(in: 10...15)
+                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
+                } else {
+                    // Wrong answer: decrease by 5%, but don't go below 1%
+                    image.completionPercentage = max(1.0, image.completionPercentage - 5.0)
+                }
+            case .trueFalse:
+                // True/False: increase/decrease based on correctness (per-image mastery)
+                if wasCorrect {
+                    // Correct answer: increase by 8-12%, cap at 100%
+                    let increase = Double.random(in: 8...12)
+                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
+                } else {
+                    // Wrong answer: decrease by 4%, but don't go below 1%
+                    image.completionPercentage = max(1.0, image.completionPercentage - 4.0)
                 }
             }
         }

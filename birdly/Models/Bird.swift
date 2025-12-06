@@ -87,20 +87,9 @@ final class Bird {
     
     /// Returns all valid game types for this bird based on its mastery level
     func validGameTypes() -> [GameType] {
-        var types: [GameType] = []
-        
-        // Introduction is only for birds that haven't been introduced (mastery == 0)
-        if completionPercentage == 0 {
-            types.append(.introduction)
+        return GameType.allCases.filter { gameType in
+            gameType.isValidForMastery(completionPercentage)
         }
-        
-        // Multiple choice and word search require the bird to be introduced (mastery > 0)
-        if completionPercentage > 0 {
-            types.append(.multipleChoice)
-            types.append(.wordSearch)
-        }
-        
-        return types
     }
     
     /// Selects an image variant and game type based on mastery levels

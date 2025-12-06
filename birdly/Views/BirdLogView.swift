@@ -153,24 +153,41 @@ struct BirdLogEntryView: View {
     
     var body: some View {
         HStack(spacing: Style.Dimensions.margin) {
-            // Bird image
-            if let perchedImage = bird.perchedImage {
-                BirdImageView(imageSource: perchedImage.imageSource, contentMode: .fill)
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
-            } else if let firstImage = bird.images.first {
-                BirdImageView(imageSource: firstImage.imageSource, contentMode: .fill)
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
-            } else {
-                // Fallback placeholder
-                Image(systemName: "photo")
-                    .font(.system(size: 40))
-                    .foregroundColor(.gray.opacity(0.5))
-                    .frame(width: 80, height: 80)
-                    .background(Color.gray.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+            // Bird image with glass border
+            Group {
+                if let perchedImage = bird.perchedImage {
+                    BirdImageView(imageSource: perchedImage.imageSource, contentMode: .fill)
+                        .frame(width: 80, height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+                } else if let firstImage = bird.images.first {
+                    BirdImageView(imageSource: firstImage.imageSource, contentMode: .fill)
+                        .frame(width: 80, height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+                } else {
+                    // Fallback placeholder
+                    Image(systemName: "photo")
+                        .font(.system(size: 40))
+                        .foregroundColor(.gray.opacity(0.5))
+                        .frame(width: 80, height: 80)
+                        .background(Color.gray.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+                }
             }
+            .overlay(
+                RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
+                    .stroke(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.accentColor.opacity(0.5),
+                                Color.accentColor.opacity(0.2)
+                            ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 2
+                    )
+            )
+            .shadow(color: Color.accentColor.opacity(0.3), radius: 4, x: 0, y: 2)
             
             // Bird info and progress
             VStack(alignment: .leading, spacing: 8) {
@@ -195,15 +212,25 @@ struct BirdLogEntryView: View {
                     
                     GeometryReader { geometry in
                         ZStack(alignment: .leading) {
-                            // Background
+                            // Background with glass effect
                             RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.gray.opacity(0.2))
+                                .fill(Color.gray.opacity(0.15))
                                 .frame(height: 8)
                             
-                            // Progress fill
+                            // Progress fill with gradient
                             RoundedRectangle(cornerRadius: 4)
-                                .fill(progressColor)
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            progressColor,
+                                            progressColor.opacity(0.8)
+                                        ]),
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
                                 .frame(width: geometry.size.width * (bird.completionPercentage / 100.0), height: 8)
+                                .shadow(color: progressColor.opacity(0.5), radius: 4, x: 0, y: 0)
                         }
                     }
                     .frame(height: 8)
@@ -213,9 +240,7 @@ struct BirdLogEntryView: View {
             Spacer()
         }
         .padding(Style.Dimensions.margin)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
-        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+        .liquidGlassCard()
     }
     
     private var progressColor: Color {
