@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MultipleChoiceGameView: View {
     let correctBird: Bird
+    let birdImage: BirdImage
     let introducedBirds: Set<UUID>
     let allBirds: [Bird]
     let onComplete: (UUID, Bool) -> Void
@@ -42,7 +43,7 @@ struct MultipleChoiceGameView: View {
                     .padding(.top, Style.Dimensions.largeMargin)
                 
                 // Bird image
-                BirdImageView(imageSource: correctBird.imageSource, contentMode: .fit)
+                BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
                     .frame(maxHeight: 300)
                     .padding(Style.Dimensions.margin)
                 
@@ -168,31 +169,29 @@ struct AnswerButton: View {
 }
 
 #Preview {
-    MultipleChoiceGameView(
-        correctBird: Bird(
-            id: UUID(),
-            name: "Robin",
-            scientificName: "Erithacus rubecula",
-            description: "Distinctive orange-red breast",
-            imageSource: .asset(name: "robin")
-        ),
-        introducedBirds: Set([UUID()]),
-        allBirds: [
-            Bird(
-                id: UUID(),
-                name: "Robin",
-                scientificName: "Erithacus rubecula",
-                description: "Distinctive orange-red breast",
-                imageSource: .asset(name: "robin")
-            ),
-            Bird(
-                id: UUID(),
-                name: "Blackbird",
-                scientificName: "Turdus merula",
-                description: "All black with yellow bill",
-                imageSource: .asset(name: "blackbird")
-            )
-        ],
+    let robin = Bird(
+        id: UUID(),
+        name: "Robin",
+        scientificName: "Erithacus rubecula",
+        description: "Distinctive orange-red breast",
+        images: [
+            BirdImage(id: UUID(), variant: "perched", imageSource: .asset(name: "Robin Perched"))
+        ]
+    )
+    let blackbird = Bird(
+        id: UUID(),
+        name: "Blackbird",
+        scientificName: "Turdus merula",
+        description: "All black with yellow bill",
+        images: [
+            BirdImage(id: UUID(), variant: "perched", imageSource: .asset(name: "Blackbird Perched"))
+        ]
+    )
+    return MultipleChoiceGameView(
+        correctBird: robin,
+        birdImage: robin.images.first!,
+        introducedBirds: Set([robin.id]),
+        allBirds: [robin, blackbird],
         onComplete: { _, _ in }
     )
 }

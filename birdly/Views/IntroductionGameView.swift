@@ -9,6 +9,7 @@ import SwiftUI
 
 struct IntroductionGameView: View {
     let bird: Bird
+    let birdImage: BirdImage
     let onComplete: (UUID, Bool) -> Void
     
     @State private var showDetails = false
@@ -17,7 +18,7 @@ struct IntroductionGameView: View {
         ScrollView {
             VStack(spacing: Style.Dimensions.largeMargin) {
                 // Bird image
-                BirdImageView(imageSource: bird.imageSource, contentMode: .fit)
+                BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
                     .frame(maxHeight: 300)
                     .padding(Style.Dimensions.margin)
                 
@@ -65,14 +66,18 @@ struct IntroductionGameView: View {
 }
 
 #Preview {
-    IntroductionGameView(
-        bird: Bird(
-            id: UUID(),
-            name: "Robin",
-            scientificName: "Erithacus rubecula",
-            description: "Distinctive orange-red breast and face, with brown upperparts. Often seen perched on garden fences and feeders.",
-            imageSource: .asset(name: "robin")
-        ),
+    let bird = Bird(
+        id: UUID(),
+        name: "Robin",
+        scientificName: "Erithacus rubecula",
+        description: "Distinctive orange-red breast and face, with brown upperparts. Often seen perched on garden fences and feeders.",
+        images: [
+            BirdImage(id: UUID(), variant: "perched", imageSource: .asset(name: "Robin Perched"))
+        ]
+    )
+    return IntroductionGameView(
+        bird: bird,
+        birdImage: bird.images.first!,
         onComplete: { _, _ in }
     )
 }

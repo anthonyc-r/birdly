@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WordSearchGameView: View {
     let bird: Bird
+    let birdImage: BirdImage
     let onComplete: (UUID, Bool) -> Void
     
     @State private var grid: [[Character]] = []
@@ -44,7 +45,7 @@ struct WordSearchGameView: View {
         GeometryReader { geometry in
             VStack(spacing: Style.Dimensions.margin) {
                 // Bird image at the top - fills available space
-                BirdImageView(imageSource: bird.imageSource, contentMode: .fit)
+                BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(Style.Dimensions.margin)
                 
@@ -610,14 +611,18 @@ extension Array {
 }
 
 #Preview {
-    WordSearchGameView(
-        bird: Bird(
-            id: UUID(),
-            name: "Robin",
-            scientificName: "Erithacus rubecula",
-            description: "Distinctive orange-red breast",
-            imageSource: .asset(name: "robin")
-        ),
+    let bird = Bird(
+        id: UUID(),
+        name: "Robin",
+        scientificName: "Erithacus rubecula",
+        description: "Distinctive orange-red breast",
+        images: [
+            BirdImage(id: UUID(), variant: "perched", imageSource: .asset(name: "Robin Perched"))
+        ]
+    )
+    return WordSearchGameView(
+        bird: bird,
+        birdImage: bird.images.first!,
         onComplete: { _, _ in }
     )
 }

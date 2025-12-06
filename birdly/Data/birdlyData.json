@@ -1,5 +1,5 @@
 {
-  "_comment": "Image formats: Use 'imageName' (string) for asset catalog images (backward compatible), or 'imageSource' (object) with 'type': 'asset'/'url' and 'value' for flexible image sources",
+  "_comment": "Image formats: Use 'imageName' (string) for asset catalog images (backward compatible), or 'imageSource' (object) with 'type': 'asset'/'url' and 'value' for flexible image sources. Each bird now has 3 images: perched, flight_side, and flight_underbelly.",
   "topics": [
     {
       "id": "00000000-0000-0000-0000-000000000001",
@@ -10,26 +10,74 @@
       "birds": [
         {
           "id": "00000000-0000-0000-0000-000000000101",
-          "name": "Robin",
-          "scientificName": "Erithacus rubecula",
-          "description": "Distinctive orange-red breast and face, with brown upperparts. Often seen perched on garden fences and feeders.",
-          "imageName": "Robin",
+          "name": "Blackbird",
+          "scientificName": "Turdus merula",
+          "description": "Males are all black with a bright yellow-orange bill. Females are dark brown with mottled underparts.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000201",
+              "variant": "perched",
+              "imageName": "Blackbird Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000202",
+              "variant": "flight_side",
+              "imageName": "Blackbird Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000203",
+              "variant": "flight_underbelly",
+              "imageName": "Blackbird Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
           "id": "00000000-0000-0000-0000-000000000102",
-          "name": "Blackbird",
-          "scientificName": "Turdus merula",
-          "description": "Males are all black with a bright yellow-orange bill. Females are dark brown with mottled underparts.",
-          "imageName": "Great Tit",
+          "name": "Blue Tit",
+          "scientificName": "Cyanistes caeruleus",
+          "description": "Small bird with bright blue cap, white face, and yellow breast. Very acrobatic at feeders.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000204",
+              "variant": "perched",
+              "imageName": "Blue Tit Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000205",
+              "variant": "flight_side",
+              "imageName": "Blue Tit Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000206",
+              "variant": "flight_underbelly",
+              "imageName": "Blue Tit Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
           "id": "00000000-0000-0000-0000-000000000103",
-          "name": "Blue Tit",
-          "scientificName": "Cyanistes caeruleus",
-          "description": "Small bird with bright blue cap, white face, and yellow breast. Very acrobatic at feeders.",
-          "imageName": "Blue Tit",
+          "name": "Goldfinch",
+          "scientificName": "Carduelis carduelis",
+          "description": "Striking red face, black and white head, and bright yellow wing bars. Often seen in small flocks feeding on thistle seeds.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000207",
+              "variant": "perched",
+              "imageName": "Goldfinch Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000208",
+              "variant": "flight_side",
+              "imageName": "Goldfinch Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000209",
+              "variant": "flight_underbelly",
+              "imageName": "Goldfinch Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
@@ -37,7 +85,23 @@
           "name": "Great Tit",
           "scientificName": "Parus major",
           "description": "Largest UK tit with black head, white cheeks, and yellow breast with a black stripe down the centre.",
-          "imageName": "Great Tit",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000210",
+              "variant": "perched",
+              "imageName": "Great Tit Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000211",
+              "variant": "flight_side",
+              "imageName": "Great Tit Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000212",
+              "variant": "flight_underbelly",
+              "imageName": "Great Tit Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
@@ -45,51 +109,146 @@
           "name": "House Sparrow",
           "scientificName": "Passer domesticus",
           "description": "Brown and grey plumage. Males have a black bib and grey crown. Often seen in small flocks.",
-          "imageName": "House Sparrow",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000213",
+              "variant": "perched",
+              "imageName": "House Sparrow Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000214",
+              "variant": "flight_side",
+              "imageName": "House Sparrow Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000215",
+              "variant": "flight_underbelly",
+              "imageName": "House Sparrow Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
           "id": "00000000-0000-0000-0000-000000000106",
-          "name": "Starling",
-          "scientificName": "Sturnus vulgaris",
-          "description": "Glossy black plumage with iridescent purple and green sheen. Yellow bill in summer, dark in winter.",
-          "imageName": "Great Tit",
+          "name": "Long Tailed Tit",
+          "scientificName": "Aegithalos caudatus",
+          "description": "Tiny bird with a very long tail, black and white head, and pinkish-white body. Often seen in small, active flocks.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000216",
+              "variant": "perched",
+              "imageName": "Long Tailed Tit Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000217",
+              "variant": "flight_side",
+              "imageName": "Long Tailed Tit Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000218",
+              "variant": "flight_underbelly",
+              "imageName": "Long Tailed Tit Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
           "id": "00000000-0000-0000-0000-000000000107",
-          "name": "Wood Pigeon",
-          "scientificName": "Columba palumbus",
-          "description": "Large grey pigeon with white patches on neck and wings. Distinctive cooing call.",
-          "imageName": "Great Tit",
+          "name": "Magpie",
+          "scientificName": "Pica pica",
+          "description": "Black and white plumage with long tail. Iridescent blue-green sheen on wings and tail.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000219",
+              "variant": "perched",
+              "imageName": "Magpie Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000220",
+              "variant": "flight_side",
+              "imageName": "Magpie Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000221",
+              "variant": "flight_underbelly",
+              "imageName": "Magpie Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
           "id": "00000000-0000-0000-0000-000000000108",
-          "name": "Magpie",
-          "scientificName": "Pica pica",
-          "description": "Black and white plumage with long tail. Iridescent blue-green sheen on wings and tail.",
-          "imageName": "Great Tit",
+          "name": "Robin",
+          "scientificName": "Erithacus rubecula",
+          "description": "Distinctive orange-red breast and face, with brown upperparts. Often seen perched on garden fences and feeders.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000222",
+              "variant": "perched",
+              "imageName": "Robin Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000223",
+              "variant": "flight_side",
+              "imageName": "Robin Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000224",
+              "variant": "flight_underbelly",
+              "imageName": "Robin Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
           "id": "00000000-0000-0000-0000-000000000109",
-          "name": "Chaffinch",
-          "scientificName": "Fringilla coelebs",
-          "description": "Males have pink breast and cheeks, blue-grey cap, and green rump. Females are brown with white wing bars.",
-          "imageName": "Great Tit",
+          "name": "Starling",
+          "scientificName": "Sturnus vulgaris",
+          "description": "Glossy black plumage with iridescent purple and green sheen. Yellow bill in summer, dark in winter.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000225",
+              "variant": "perched",
+              "imageName": "Starling Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000226",
+              "variant": "flight_side",
+              "imageName": "Starling Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000227",
+              "variant": "flight_underbelly",
+              "imageName": "Starling Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         },
         {
           "id": "00000000-0000-0000-0000-000000000110",
-          "name": "Dunnock",
-          "scientificName": "Prunella modularis",
-          "description": "Small, streaky brown bird with grey head and orange-brown legs. Often seen on the ground under bushes.",
-          "imageName": "Great Tit",
+          "name": "Wood Pigeon",
+          "scientificName": "Columba palumbus",
+          "description": "Large grey pigeon with white patches on neck and wings. Distinctive cooing call.",
+          "images": [
+            {
+              "id": "00000000-0000-0000-0000-000000000228",
+              "variant": "perched",
+              "imageName": "Wood Pigeon Perched"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000229",
+              "variant": "flight_side",
+              "imageName": "Wood Pigeon Flight Side"
+            },
+            {
+              "id": "00000000-0000-0000-0000-000000000230",
+              "variant": "flight_underbelly",
+              "imageName": "Wood Pigeon Flight Underbelly"
+            }
+          ],
           "isIdentified": false
         }
       ]
     }
   ]
 }
-

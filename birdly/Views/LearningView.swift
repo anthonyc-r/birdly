@@ -37,23 +37,26 @@ struct LearningView: View {
                         case .introduction:
                             IntroductionGameView(
                                 bird: card.bird,
+                                birdImage: card.birdImage,
                                 onComplete: handleCardComplete
                             )
-                            .id("intro-\(currentCardIndex)-\(card.bird.id)")
+                            .id("intro-\(currentCardIndex)-\(card.bird.id)-\(card.birdImage.id)")
                         case .multipleChoice:
                             MultipleChoiceGameView(
                                 correctBird: card.bird,
+                                birdImage: card.birdImage,
                                 introducedBirds: introducedBirds,
                                 allBirds: topic.birds,
                                 onComplete: handleCardComplete
                             )
-                            .id("mc-\(currentCardIndex)-\(card.bird.id)")
+                            .id("mc-\(currentCardIndex)-\(card.bird.id)-\(card.birdImage.id)")
                         case .wordSearch:
                             WordSearchGameView(
                                 bird: card.bird,
+                                birdImage: card.birdImage,
                                 onComplete: handleCardComplete
                             )
-                            .id("ws-\(currentCardIndex)-\(card.bird.id)")
+                            .id("ws-\(currentCardIndex)-\(card.bird.id)-\(card.birdImage.id)")
                         }
                     }
                 } else {
@@ -126,10 +129,11 @@ struct LearningView: View {
         
         // Add practice games for introduced birds, weighted by mastery level
         // Higher mastery = more word search, lower mastery = more multiple choice
+        // Now selects both image variant and game type based on per-image mastery
         if canPlayMultipleChoice {
             for bird in introducedBirdsList {
-                if let gameType = bird.selectGameTypeForMastery() {
-                    cards.append(Flashcard(bird: bird, gameType: gameType))
+                if let (image, gameType) = bird.selectImageAndGameType() {
+                    cards.append(Flashcard(bird: bird, birdImage: image, gameType: gameType))
                 }
             }
         }
@@ -150,9 +154,10 @@ struct LearningView: View {
         }
         
         // Add introduction games for new birds to introduce
+        // Introduction always uses the perched image (primary) and only shows once per bird
         for (index, bird) in newBirds.prefix(newBirdsToIntroduce).enumerated() {
-            if let gameType = bird.selectGameTypeForMastery() {
-                cards.append(Flashcard(bird: bird, gameType: gameType))
+            if let perchedImage = bird.perchedImage ?? bird.images.first {
+                cards.append(Flashcard(bird: bird, birdImage: perchedImage, gameType: .introduction))
             }
         }
         
@@ -168,32 +173,33 @@ struct LearningView: View {
         guard let bird = topic.birds.first(where: { $0.id == birdId }) else { return }
         
         if let card = currentCard {
+            let image = card.birdImage
+            
             switch card.gameType {
             case .introduction:
-                // Introduction game: set initial completion to 5%
-                bird.completionPercentage = 5.0
-                bird.hasBeenIntroduced = true
+                // Introduction game: set initial completion for the image (marks as introduced)
+                image.completionPercentage = 5.0
                 introducedBirds.insert(birdId)
                 
             case .multipleChoice:
-                // Multiple choice: increase/decrease based on correctness
+                // Multiple choice: increase/decrease based on correctness (per-image mastery)
                 if wasCorrect {
                     // Correct answer: increase by 10-15%, cap at 100%
                     let increase = Double.random(in: 10...15)
-                    bird.completionPercentage = min(100.0, bird.completionPercentage + increase)
+                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
                 } else {
                     // Wrong answer: decrease by 5%, but don't go below 1%
-                    bird.completionPercentage = max(1.0, bird.completionPercentage - 5.0)
+                    image.completionPercentage = max(1.0, image.completionPercentage - 5.0)
                 }
             case .wordSearch:
-                // Word search: increase/decrease based on correctness
+                // Word search: increase/decrease based on correctness (per-image mastery)
                 if wasCorrect {
                     // Correct answer: increase by 12-18%, cap at 100%
                     let increase = Double.random(in: 12...18)
-                    bird.completionPercentage = min(100.0, bird.completionPercentage + increase)
+                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
                 } else {
                     // Wrong answer: decrease by 3%, but don't go below 1%
-                    bird.completionPercentage = max(1.0, bird.completionPercentage - 3.0)
+                    image.completionPercentage = max(1.0, image.completionPercentage - 3.0)
                 }
             }
         }
@@ -234,8 +240,7 @@ struct LearningView: View {
                 name: "Robin",
                 scientificName: "Erithacus rubecula",
                 description: "Distinctive orange-red breast",
-                imageSource: .asset(name: "robin"),
-                hasBeenIntroduced: false
+                imageSource: .asset(name: "robin")
             )
         ]
     )
