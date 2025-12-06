@@ -80,8 +80,11 @@ class TopicSession: ObservableObject {
         let targetIntroducedCount = Int(ceil(Double(totalBirds) * (topicProgress / 0.3)))
         let currentIntroducedCount = introducedBirds.count
         
-        // If we haven't reached the target, introduce new birds
-        if currentIntroducedCount < targetIntroducedCount {
+        if currentIntroducedCount < 2 {
+            // Always introduce below 2.
+            return true
+        } else if currentIntroducedCount < targetIntroducedCount {
+            // If we haven't reached the target, introduce new birds
             // Higher chance to introduce when we're further behind
             let progressRatio = topicProgress / 0.5 // 0.0 to 1.0 within first 50%
             let introduceProbability = 0.3 + (0.5 * (1.0 - progressRatio)) // 0.8 to 0.3
