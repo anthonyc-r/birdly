@@ -13,7 +13,7 @@
           "name": "Robin",
           "scientificName": "Erithacus rubecula",
           "description": "Distinctive orange-red breast and face, with brown upperparts. Often seen perched on garden fences and feeders.",
-          "imageName": "robin",
+          "imageName": "Robin",
           "isIdentified": false
         },
         {
@@ -21,7 +21,7 @@
           "name": "Blackbird",
           "scientificName": "Turdus merula",
           "description": "Males are all black with a bright yellow-orange bill. Females are dark brown with mottled underparts.",
-          "imageName": "blackbird",
+          "imageName": "Great Tit",
           "isIdentified": false
         },
         {
@@ -29,7 +29,7 @@
           "name": "Blue Tit",
           "scientificName": "Cyanistes caeruleus",
           "description": "Small bird with bright blue cap, white face, and yellow breast. Very acrobatic at feeders.",
-          "imageName": "blue-tit",
+          "imageName": "Blue Tit",
           "isIdentified": false
         },
         {
@@ -37,7 +37,7 @@
           "name": "Great Tit",
           "scientificName": "Parus major",
           "description": "Largest UK tit with black head, white cheeks, and yellow breast with a black stripe down the centre.",
-          "imageName": "great-tit",
+          "imageName": "Great Tit",
           "isIdentified": false
         },
         {
@@ -45,7 +45,7 @@
           "name": "House Sparrow",
           "scientificName": "Passer domesticus",
           "description": "Brown and grey plumage. Males have a black bib and grey crown. Often seen in small flocks.",
-          "imageName": "house-sparrow",
+          "imageName": "House Sparrow",
           "isIdentified": false
         },
         {
@@ -53,7 +53,7 @@
           "name": "Starling",
           "scientificName": "Sturnus vulgaris",
           "description": "Glossy black plumage with iridescent purple and green sheen. Yellow bill in summer, dark in winter.",
-          "imageName": "starling",
+          "imageName": "Great Tit",
           "isIdentified": false
         },
         {
@@ -61,7 +61,7 @@
           "name": "Wood Pigeon",
           "scientificName": "Columba palumbus",
           "description": "Large grey pigeon with white patches on neck and wings. Distinctive cooing call.",
-          "imageName": "wood-pigeon",
+          "imageName": "Great Tit",
           "isIdentified": false
         },
         {
@@ -69,7 +69,7 @@
           "name": "Magpie",
           "scientificName": "Pica pica",
           "description": "Black and white plumage with long tail. Iridescent blue-green sheen on wings and tail.",
-          "imageName": "magpie",
+          "imageName": "Great Tit",
           "isIdentified": false
         },
         {
@@ -77,7 +77,7 @@
           "name": "Chaffinch",
           "scientificName": "Fringilla coelebs",
           "description": "Males have pink breast and cheeks, blue-grey cap, and green rump. Females are brown with white wing bars.",
-          "imageName": "chaffinch",
+          "imageName": "Great Tit",
           "isIdentified": false
         },
         {
@@ -85,7 +85,7 @@
           "name": "Dunnock",
           "scientificName": "Prunella modularis",
           "description": "Small, streaky brown bird with grey head and orange-brown legs. Often seen on the ground under bushes.",
-          "imageName": "dunnock",
+          "imageName": "Great Tit",
           "isIdentified": false
         }
       ]

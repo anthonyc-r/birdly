@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-struct Bird: Codable, Identifiable {
+struct Bird: Codable, Identifiable, Hashable {
     var id: UUID
     var name: String
     var scientificName: String
     var description: String
     var imageSource: ImageSource
     var isIdentified: Bool = false
+    var hasBeenIntroduced: Bool = false
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -23,15 +24,17 @@ struct Bird: Codable, Identifiable {
         case imageSource
         case imageName // For backward compatibility
         case isIdentified
+        case hasBeenIntroduced
     }
     
-    init(id: UUID, name: String, scientificName: String, description: String, imageSource: ImageSource, isIdentified: Bool = false) {
+    init(id: UUID, name: String, scientificName: String, description: String, imageSource: ImageSource, isIdentified: Bool = false, hasBeenIntroduced: Bool = false) {
         self.id = id
         self.name = name
         self.scientificName = scientificName
         self.description = description
         self.imageSource = imageSource
         self.isIdentified = isIdentified
+        self.hasBeenIntroduced = hasBeenIntroduced
     }
     
     init(from decoder: Decoder) throws {
@@ -41,6 +44,7 @@ struct Bird: Codable, Identifiable {
         scientificName = try container.decode(String.self, forKey: .scientificName)
         description = try container.decode(String.self, forKey: .description)
         isIdentified = try container.decodeIfPresent(Bool.self, forKey: .isIdentified) ?? false
+        hasBeenIntroduced = try container.decodeIfPresent(Bool.self, forKey: .hasBeenIntroduced) ?? false
         
         // Support both new format (imageSource) and old format (imageName) for backward compatibility
         if let imageSource = try? container.decode(ImageSource.self, forKey: .imageSource) {
@@ -62,6 +66,7 @@ struct Bird: Codable, Identifiable {
         try container.encode(description, forKey: .description)
         try container.encode(imageSource, forKey: .imageSource)
         try container.encode(isIdentified, forKey: .isIdentified)
+        try container.encode(hasBeenIntroduced, forKey: .hasBeenIntroduced)
     }
 }
 

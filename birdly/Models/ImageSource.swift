@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ImageSource: Codable {
+enum ImageSource: Codable, Hashable {
     case asset(name: String)
     case url(String)
     

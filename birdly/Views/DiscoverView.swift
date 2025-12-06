@@ -17,14 +17,20 @@ struct DiscoverView: View {
     ]
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: Style.Dimensions.margin) {
-                    ForEach(dataModel.topics, id: \.id) { topic in
-                        CategoryTileView(topic: topic)
+        @Bindable var nav = navigationModel
+        NavigationStack(path: $nav.path) {
+            ZStack {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: Style.Dimensions.margin) {
+                        ForEach(dataModel.topics, id: \.id) { topic in
+                            CategoryTileView(topic: topic)
+                        }
                     }
+                    .padding(Style.Dimensions.margin)
                 }
-                .padding(Style.Dimensions.margin)
+            }
+            .navigationDestination(for: Topic.self) { topic in
+                LearningView(topic: topic)
             }
             .navigationTitle("Bird Categories")
         }
@@ -35,38 +41,40 @@ struct CategoryTileView: View {
     let topic: Topic
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .bottomLeading) {
-                // Background image
-                BirdImageView(imageSource: topic.imageSource, contentMode: .fill)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .clipped()
-                
-                // Black to transparent gradient overlay from bottom
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]),
-                    startPoint: .bottom,
-                    endPoint: .top
-                )
-                
-                // Text overlay
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(topic.title)
-                        .font(Style.Font.b2.weight(.semibold))
-                        .foregroundColor(.white)
-                        .lineLimit(2)
+        NavigationLink(value: topic) {
+            GeometryReader { geometry in
+                ZStack(alignment: .bottomLeading) {
+                    // Background image
+                    BirdImageView(imageSource: topic.imageSource, contentMode: .fill)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .clipped()
                     
-                    Text(topic.subtitle)
-                        .font(Style.Font.b4)
-                        .foregroundColor(.white.opacity(0.9))
-                        .lineLimit(2)
+                    // Black to transparent gradient overlay from bottom
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0.0)]),
+                        startPoint: .bottom,
+                        endPoint: .top
+                    )
+                    
+                    // Text overlay
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(topic.title)
+                            .font(Style.Font.b2.weight(.semibold))
+                            .foregroundColor(.white)
+                            .lineLimit(2)
+                        
+                        Text(topic.subtitle)
+                            .font(Style.Font.b4)
+                            .foregroundColor(.white.opacity(0.9))
+                            .lineLimit(2)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(Style.Dimensions.margin)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(Style.Dimensions.margin)
+                .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
             }
-            .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+            .aspectRatio(1.0, contentMode: .fit)
         }
-        .aspectRatio(1.0, contentMode: .fit)
     }
 }
 
