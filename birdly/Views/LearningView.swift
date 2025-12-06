@@ -120,76 +120,7 @@ struct LearningView: View {
     }
     
     private func handleCardComplete(birdId: UUID, wasCorrect: Bool) {
-        Task {
-            // Get the current game
-            guard let game = session.currentGameInfo else { return }
-            
-            let image = game.birdImage
-            
-            switch game.gameType {
-            case .introduction:
-                // Introduction game: increase mastery when completed (marks as introduced)
-                if wasCorrect {
-                    // Increase by 5-8% to mark as introduced
-                    let increase = Double.random(in: 5...8)
-                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
-                }
-                
-            case .multipleChoice:
-                // Multiple choice: increase/decrease based on correctness (per-image mastery)
-                if wasCorrect {
-                    // Correct answer: increase by 10-15%, cap at 100%
-                    let increase = Double.random(in: 10...15)
-                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
-                } else {
-                    // Wrong answer: decrease by 5%, but don't go below 1%
-                    image.completionPercentage = max(1.0, image.completionPercentage - 5.0)
-                }
-            case .wordSearch:
-                // Word search: increase/decrease based on correctness (per-image mastery)
-                if wasCorrect {
-                    // Correct answer: increase by 12-18%, cap at 100%
-                    let increase = Double.random(in: 12...18)
-                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
-                } else {
-                    // Wrong answer: decrease by 3%, but don't go below 1%
-                    image.completionPercentage = max(1.0, image.completionPercentage - 3.0)
-                }
-            case .letterSelection:
-                // Letter selection: increase/decrease based on correctness (per-image mastery)
-                if wasCorrect {
-                    // Correct answer: increase by 10-15%, cap at 100%
-                    let increase = Double.random(in: 10...15)
-                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
-                } else {
-                    // Wrong answer: decrease by 5%, but don't go below 1%
-                    image.completionPercentage = max(1.0, image.completionPercentage - 5.0)
-                }
-            case .trueFalse:
-                // True/False: increase/decrease based on correctness (per-image mastery)
-                if wasCorrect {
-                    // Correct answer: increase by 8-12%, cap at 100%
-                    let increase = Double.random(in: 8...12)
-                    image.completionPercentage = min(100.0, image.completionPercentage + increase)
-                } else {
-                    // Wrong answer: decrease by 4%, but don't go below 1%
-                    image.completionPercentage = max(1.0, image.completionPercentage - 4.0)
-                }
-            }
-            
-            // Force SwiftData to save and notify observers immediately
-            // This ensures the progress bar updates in real-time
-            do {
-                try modelContext.save()
-            } catch {
-                print("Failed to save progress: \(error)")
-            }
-            
-            // Move to next game
-            withAnimation {
-                session.advance()
-            }
-        }
+        session.handleCardCompletion(birdId: birdId, wasCorrect: wasCorrect, modelContext: modelContext)
     }
 }
 

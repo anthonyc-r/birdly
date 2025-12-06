@@ -43,8 +43,12 @@ struct LetterSelectionGameView: View {
             
             Spacer()
             
-            // Word display with underscores
-            HStack(spacing: 8) {
+            // Word display with underscores (wrapping across multiple lines)
+            let columns = [
+                GridItem(.adaptive(minimum: 48), spacing: 8)
+            ]
+            
+            LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
                 ForEach(0..<nameLength, id: \.self) { index in
                     let char = filledLetters[safe: index]
                     // How is this still an issue in swift after all these years?!

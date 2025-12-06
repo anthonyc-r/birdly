@@ -14,17 +14,30 @@ enum GameType: CaseIterable {
     case letterSelection
     case trueFalse
     
+    /// Difficulty rating from 0.0 (easiest) to 1.0 (hardest)
+    /// Used to determine mastery gain amounts
+    var difficulty: Double {
+        switch self {
+        case .introduction:
+            return 0.2 // Easiest, lower rewards
+        case .multipleChoice, .trueFalse:
+            return 0.4 // Medium difficulty
+        case .letterSelection:
+            return 0.5 // Medium-high difficulty
+        case .wordSearch:
+            return 0.7 // Hardest, highest rewards
+        }
+    }
+    
     /// Returns the mastery threshold for this game type (0-100 range)
     var requiredMastery: Double {
         switch self {
-        case .multipleChoice:
-            return 5.0
+        case .multipleChoice, .trueFalse:
+            return 0.01 // Non-zero to ensure it's always available post-introduction
         case .letterSelection:
             return 40.0
         case .wordSearch:
             return 40.0
-        case .trueFalse:
-            return 0.01 // Non-zero to ensure it's always available post-introduction
         default:
             return 0.0
         }

@@ -87,12 +87,21 @@ struct TrueFalseGameView: View {
             .padding(.horizontal, Style.Dimensions.margin)
             
             // Result message
-            Text(wasCorrect ? "Correct! ✓" : "Not quite. This is a \(correctBird.name)")
-                .font(Style.Font.b2)
-                .foregroundColor(wasCorrect ? .green : .red)
-                .padding(.top, Style.Dimensions.margin)
-                .transition(.opacity)
-                .opacity(showResult ? 1.0 : 0.0)
+            VStack(spacing: Style.Dimensions.smallMargin) {
+                Text(wasCorrect ? "Correct! ✓" : "Not quite.")
+                    .font(Style.Font.b2)
+                    .foregroundColor(wasCorrect ? .green : .red)
+                
+                // Show actual bird name when the statement is false (regardless of answer correctness)
+                if !isCorrectMatch {
+                    Text("This is a \(correctBird.name)")
+                        .font(Style.Font.b2)
+                        .foregroundColor(.primary)
+                }
+            }
+            .padding(.top, Style.Dimensions.margin)
+            .transition(.opacity)
+            .opacity(showResult ? 1.0 : 0.0)
         }
         .padding(Style.Dimensions.margin)
         .onAppear {

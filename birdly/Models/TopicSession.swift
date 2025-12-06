@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftData
 
 /// Represents a learning session for a topic
 /// Manages the sequence of games to be played
@@ -230,6 +231,85 @@ class TopicSession: ObservableObject {
         }
         
         return items.first
+    }
+    
+    /// Calculates mastery gain scaled by current mastery level
+    /// Higher mastery = slower gain (diminishing returns)
+    /// Returns a value between baseMin and baseMax, scaled down as mastery increases
+    private func calculateScaledMasteryGain(currentMastery: Double, baseMin: Double, baseMax: Double) -> Double {
+        // Scale factor: 1.0 at 0% mastery, ~0.6 at 100% mastery
+        // Uses a very gentle curve that keeps gains high for longer
+        let masteryRatio = currentMastery / 100.0 // 0.0 to 1.0
+        // Linear decrease with a small quadratic component for smooth transition
+        let scaleFactor = 1.0 - (masteryRatio * 0.4) // Very gentle linear decrease
+        
+        // Ensure minimum scale of 0.6 to allow good progress even at high mastery
+        let finalScale = max(0.6, scaleFactor)
+        
+        // Calculate scaled range
+        let scaledMin = baseMin * finalScale
+        let scaledMax = baseMax * finalScale
+        
+        return Double.random(in: scaledMin...scaledMax)
+    }
+    
+    /// Calculates base mastery gain range from difficulty rating (0.0 to 1.0)
+    /// Higher difficulty = higher rewards
+    private func calculateMasteryGainRange(difficulty: Double) -> (min: Double, max: Double) {
+        // Map difficulty (0.0-1.0) to mastery gain range
+        // Linear mapping: difficulty 0.0 -> ~12-18%, difficulty 1.0 -> ~25-35%
+        let baseMin = 10.0 + (difficulty * 20.0) // 10 to 30
+        let baseMax = 15.0 + (difficulty * 20.0) // 15 to 35
+        return (min: baseMin, max: baseMax)
+    }
+    
+    /// Calculates mastery penalty for wrong answers based on difficulty
+    /// Higher difficulty = smaller penalty (harder games are more forgiving)
+    private func calculateMasteryPenalty(difficulty: Double) -> Double {
+        // Map difficulty (0.0-1.0) to penalty amount
+        // Higher difficulty = lower penalty (more forgiving)
+        // Range: 5% (easy) to 3% (hard)
+        return 5.0 - (difficulty * 2.0)
+    }
+    
+    /// Handles card completion: updates mastery based on game type and correctness
+    /// Then advances to the next game
+    func handleCardCompletion(birdId: UUID, wasCorrect: Bool, modelContext: ModelContext) {
+        Task { @MainActor in
+            // Get the current game
+            guard let game = currentGameInfo else { return }
+            
+            let image = game.birdImage
+            let currentMastery = image.completionPercentage
+            let difficulty = game.gameType.difficulty
+            
+            if wasCorrect {
+                // Calculate mastery gain based on difficulty
+                let range = calculateMasteryGainRange(difficulty: difficulty)
+                let increase = calculateScaledMasteryGain(
+                    currentMastery: currentMastery,
+                    baseMin: range.min,
+                    baseMax: range.max
+                )
+                image.completionPercentage = min(100.0, image.completionPercentage + increase)
+            } else {
+                // Wrong answer: decrease based on difficulty (harder games = smaller penalty)
+                // Introduction games don't decrease (they only increase on correct)
+                if game.gameType != .introduction {
+                    let penalty = calculateMasteryPenalty(difficulty: difficulty)
+                    image.completionPercentage = max(1.0, image.completionPercentage - penalty)
+                }
+            }
+            
+            // Force SwiftData to save and notify observers immediately
+            // This ensures the progress bar updates in real-time
+            do {
+                try modelContext.save()
+            } catch {
+                print("Failed to save progress: \(error)")
+            }
+            advance()
+        }
     }
 }
 
