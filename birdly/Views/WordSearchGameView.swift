@@ -41,20 +41,6 @@ struct WordSearchGameView: View {
         }
     }
     
-    struct GridPosition: Hashable {
-        let row: Int
-        let col: Int
-    }
-    
-    // PreferenceKey to track cell positions for drawing lines
-    struct CellPositionKey: PreferenceKey {
-        static var defaultValue: [GridPosition: CGPoint] = [:]
-        
-        static func reduce(value: inout [GridPosition: CGPoint], nextValue: () -> [GridPosition: CGPoint]) {
-            value.merge(nextValue(), uniquingKeysWith: { _, new in new })
-        }
-    }
-    
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: Style.Dimensions.margin) {
@@ -349,7 +335,7 @@ struct WordSearchGameView: View {
         }
     }
     
-    private static func generateRandomWalkPath(wordLength: Int, gridSize: Int, maxAttempts: Int) -> [GridPosition] {
+    private nonisolated static func generateRandomWalkPath(wordLength: Int, gridSize: Int, maxAttempts: Int) -> [GridPosition] {
         // All 8 possible directions (including diagonals)
         let allDirections: [(Int, Int)] = [
             (-1, -1), (-1, 0), (-1, 1),  // Up-left, Up, Up-right
@@ -496,7 +482,7 @@ struct WordSearchGameView: View {
         return Self.generateFallbackPath(wordLength: wordLength, gridSize: gridSize)
     }
     
-    private static func extendPath(from existingPath: [GridPosition], targetLength: Int, gridSize: Int) -> [GridPosition] {
+    private nonisolated static func extendPath(from existingPath: [GridPosition], targetLength: Int, gridSize: Int) -> [GridPosition] {
         guard let lastPos = existingPath.last else { return existingPath }
         var path = existingPath
         var visited = Set(existingPath)
@@ -552,7 +538,7 @@ struct WordSearchGameView: View {
         return path
     }
     
-    private static func generateFallbackPath(wordLength: Int, gridSize: Int) -> [GridPosition] {
+    private nonisolated static func generateFallbackPath(wordLength: Int, gridSize: Int) -> [GridPosition] {
         var path: [GridPosition] = []
         var row = gridSize / 2
         var col = max(0, (gridSize - wordLength) / 2)
@@ -694,8 +680,6 @@ struct WordSearchGameView: View {
     
     private func isCellPartOfWord(_ position: GridPosition) -> Bool {
         guard foundWord else { return false }
-        // When word is found, highlight all cells that are part of the correct word
-        let targetWord = bird.name.uppercased().replacingOccurrences(of: " ", with: "")
         // This is a simplified check - in a full implementation, we'd track where the word was placed
         return selectedCells.contains(position)
     }
@@ -728,10 +712,17 @@ struct WordSearchGameView: View {
     }
 }
 
-// Helper extension for safe array access
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        return indices.contains(index) ? self[index] : nil
+fileprivate struct GridPosition: @nonisolated Hashable {
+    let row: Int
+    let col: Int
+}
+
+// PreferenceKey to track cell positions for drawing lines
+fileprivate struct CellPositionKey: PreferenceKey {
+    static var defaultValue: [GridPosition: CGPoint] = [:]
+    
+    static func reduce(value: inout [GridPosition: CGPoint], nextValue: () -> [GridPosition: CGPoint]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
     }
 }
 

@@ -16,7 +16,7 @@ enum GameType: CaseIterable {
     
     /// Difficulty rating from 0.0 (easiest) to 1.0 (hardest)
     /// Used to determine mastery gain amounts
-    var difficulty: Double {
+    nonisolated var difficulty: Double {
         switch self {
         case .introduction:
             return 0.2 // Easiest, lower rewards
@@ -30,7 +30,7 @@ enum GameType: CaseIterable {
     }
     
     /// Returns the mastery threshold for this game type (0-100 range)
-    var requiredMastery: Double {
+    nonisolated var requiredMastery: Double {
         switch self {
         case .multipleChoice, .trueFalse:
             return 0.01 // Non-zero to ensure it's always available post-introduction
@@ -45,7 +45,7 @@ enum GameType: CaseIterable {
     
     /// Checks if the given mastery level is valid for this game type
     /// Mastery should be in 0-100 range
-    func isValidForMastery(_ mastery: Double) -> Bool {
+    nonisolated func isValidForMastery(_ mastery: Double) -> Bool {
         return mastery >= requiredMastery
     }
     

@@ -52,6 +52,7 @@ final class Topic {
     }
     
     /// Creates a new TopicSession for this topic
+    @MainActor
     func createSession() -> TopicSession {
         return TopicSession(topic: self)
     }
