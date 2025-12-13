@@ -96,108 +96,50 @@ struct CategoryTileView: View {
     
     var body: some View {
         NavigationLink(value: topic) {
-            GeometryReader { geometry in
-                ZStack(alignment: .bottomLeading) {
-                    // Background image
-                    BirdImageView(imageSource: topic.imageSource, contentMode: .fill)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .clipped()
-                    
-                    // Gradient overlay with accent color hint
-                    ZStack {
-                        // Dark gradient from bottom
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.black.opacity(0.8),
-                                Color.black.opacity(0.4),
-                                Color.black.opacity(0.0)
-                            ]),
-                            startPoint: .bottom,
-                            endPoint: .top
-                        )
-                        
-                        // Accent color glow at bottom
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.accentColor.opacity(0.3),
-                                Color.clear
-                            ]),
-                            startPoint: .bottom,
-                            endPoint: .center
-                        )
-                    }
-                    
-                    // Glass text overlay container
-                    VStack(alignment: .leading, spacing: 4) {
-                        Spacer()
-                        Text(topic.title)
-                            .font(Style.Font.b2.weight(.semibold))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        .white,
-                                        .white.opacity(0.95)
-                                    ]),
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(2)
-                        
-                        Text(topic.subtitle)
-                            .font(Style.Font.b4)
-                            .foregroundColor(.white.opacity(0.9))
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(2)
-                    }
-                    .padding(.horizontal, Style.Dimensions.smallMargin)
-                    .padding(.vertical, Style.Dimensions.margin)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background {
-                        // Glass effect for text container
-                        RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                            .fill(.ultraThinMaterial)
-                            .opacity(0.3)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                                    .stroke(
-                                        LinearGradient(
-                                            gradient: Gradient(colors: [
-                                                Color.accentColor.opacity(0.4),
-                                                Color.accentColor.opacity(0.1)
-                                            ]),
-                                            startPoint: .leading,
-                                            endPoint: .trailing
-                                        ),
-                                        lineWidth: 1
-                                    )
-                            )
-                    }
-                }
-                .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
-                .overlay(
-                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                        .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.accentColor.opacity(0.3),
-                                    Color.accentColor.opacity(0.1)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 1.5
-                        )
+            ZStack {
+                BirdImageView(imageSource: topic.imageSource, contentMode: .fill)
+                // Dark gradient from bottom
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.black.opacity(0.8),
+                        Color.black.opacity(0.4),
+                        Color.black.opacity(0.0)
+                    ]),
+                    startPoint: .bottom,
+                    endPoint: .top
                 )
-                .shadow(
-                    color: Color.accentColor.opacity(0.2),
-                    radius: 8,
-                    x: 0,
-                    y: 4
+                
+                // Accent color glow at bottom
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.accentColor.opacity(0.3),
+                        Color.clear
+                    ]),
+                    startPoint: .bottom,
+                    endPoint: .center
                 )
             }
             .aspectRatio(1.0, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+            .overlay {
+                HStack(alignment: .bottom, spacing: 0) {
+                    VStack(alignment: .leading, spacing: Style.Dimensions.smallMargin) {
+                        Spacer(minLength: 0)
+                        Text(topic.title)
+                            .font(Style.Font.b2.weight(.semibold))
+                            .foregroundStyle(.white)
+                        Text(topic.subtitle)
+                            .font(Style.Font.b4)
+                            .foregroundColor(.white)
+                    }
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, Style.Dimensions.smallMargin)
+                    .padding(.vertical, Style.Dimensions.margin)
+                    Spacer(minLength: 0)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+                .glassEffect(.clear.interactive(), in: RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+            }
         }
     }
 }
