@@ -57,26 +57,7 @@ struct WordSearchGameView: View {
                             ProgressView()
                                 .scaleEffect(1.5)
                                 .tint(.accentColor)
-                        }
-                        
-                        // Draw lines connecting selected cells
-                        if !selectedPath.isEmpty && !cellPositions.isEmpty && !isGenerating {
-                            Path { path in
-                                for (index, position) in selectedPath.enumerated() {
-                                    if let point = cellPositions[position] {
-                                        if index == 0 {
-                                            path.move(to: point)
-                                        } else {
-                                            path.addLine(to: point)
-                                        }
-                                    }
-                                }
-                            }
-                            .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-                        }
-                        
-                        // Grid of circular letters
-                        if !isGenerating {
+                        } else {
                             VStack(spacing: cellSpacing) {
                                 ForEach(0..<gridSize, id: \.self) { row in
                                     HStack(spacing: cellSpacing) {
@@ -153,6 +134,22 @@ struct WordSearchGameView: View {
                                 }
                             }
                             .coordinateSpace(name: "grid")
+                        }
+                        
+                        // Draw lines connecting selected cells
+                        if !selectedPath.isEmpty && !cellPositions.isEmpty && !isGenerating {
+                            Path { path in
+                                for (index, position) in selectedPath.enumerated() {
+                                    if let point = cellPositions[position] {
+                                        if index == 0 {
+                                            path.move(to: point)
+                                        } else {
+                                            path.addLine(to: point)
+                                        }
+                                    }
+                                }
+                            }
+                            .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
                         }
                     }
                     .frame(
@@ -257,14 +254,13 @@ struct WordSearchGameView: View {
         
         // Run heavy computation on background thread
         let result = await Task.detached(priority: .userInitiated) {
-            // Start with grid size 5
-            var currentGridSize = 5
+            var currentGridSize = 4
             
             var success = false
             var attempts = 0
             let maxTotalAttempts = 3 // Maximum times to increase grid size
             var generatedGrid: [[Character]] = []
-            var finalGridSize = 5
+            var finalGridSize = 4
             
             while !success && attempts < maxTotalAttempts && currentGridSize <= maxGridSize {
                 // Ensure word fits in current grid
@@ -467,18 +463,18 @@ struct WordSearchGameView: View {
             attempts += 1
         }
         
-            // If we have a partial path, try to extend it
-            if bestPath.count > 0 {
-                if bestPath.count >= wordLength {
-                    return Array(bestPath.prefix(wordLength))
-                } else {
-                    // Try to extend from the last position
-                    let extended = Self.extendPath(from: bestPath, targetLength: wordLength, gridSize: gridSize)
-                    if extended.count >= wordLength {
-                        return Array(extended.prefix(wordLength))
-                    }
+        // If we have a partial path, try to extend it
+        if bestPath.count > 0 {
+            if bestPath.count >= wordLength {
+                return Array(bestPath.prefix(wordLength))
+            } else {
+                // Try to extend from the last position
+                let extended = Self.extendPath(from: bestPath, targetLength: wordLength, gridSize: gridSize)
+                if extended.count >= wordLength {
+                    return Array(extended.prefix(wordLength))
                 }
             }
+        }
         
         // Fallback: create a simple snaking path if random walk fails
         return Self.generateFallbackPath(wordLength: wordLength, gridSize: gridSize)
@@ -731,7 +727,7 @@ fileprivate struct CellPositionKey: PreferenceKey {
 #Preview {
     let bird = Bird(
         id: UUID(),
-        name: "Robin",
+        name: "Long Tailed Tit",
         scientificName: "Erithacus rubecula",
         description: "Distinctive orange-red breast",
         images: [
