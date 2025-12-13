@@ -44,7 +44,7 @@ struct DiscoverView: View {
                 VStack(spacing: Style.Dimensions.margin) {
                     // In Progress Section
                     if !topicsInProgress.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: Style.Dimensions.margin) {
                             Text("In Progress")
                                 .font(Style.Font.h3.weight(.semibold))
                                 .padding(.horizontal, Style.Dimensions.margin)
@@ -53,9 +53,9 @@ struct DiscoverView: View {
                                 HStack(spacing: Style.Dimensions.margin) {
                                     ForEach(topicsInProgress) { topic in
                                         InProgressTopicCard(topic: topic)
-                                            .padding(Style.Dimensions.margin)
                                     }
                                 }
+                                .padding(.horizontal, Style.Dimensions.margin)
                             }
                         }
                     }
