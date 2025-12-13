@@ -51,51 +51,34 @@ struct LetterSelectionGameView: View {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
                     ForEach(0..<nameLength, id: \.self) { index in
                         let char = filledLetters[safe: index]
-                        // How is this still an issue in swift after all these years?!
-                        let displayChar: Character = (char ?? "_") ?? "_"
                         let isSpace = char == " "
                         let isCurrent = index == currentPosition && !gameWon && !gameLost
                         
-                        Text(String(displayChar))
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
-                            .foregroundColor(isCurrent ? .accentColor : (isSpace ? .clear : .primary))
-                            .frame(width: isSpace ? 20 : 40, height: 50)
-                            .background {
-                                if !isSpace {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(isCurrent ? Color.accentColor.opacity(0.1) : Color.clear)
-                                }
-                            }
-                            .overlay {
-                                if !isSpace {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(
-                                            isCurrent ? Color.accentColor : Color.gray.opacity(0.3),
-                                            lineWidth: isCurrent ? 2 : 1
-                                        )
-                                }
-                            }
+                        LetterSlotView(
+                            character: char ?? nil,
+                            isCurrent: isCurrent,
+                            isSpace: isSpace
+                        )
                     }
                 }
                 .padding(.horizontal, Style.Dimensions.margin)
                 
                 // Letter options
-                if !gameWon && !gameLost {
-                    HStack(spacing: Style.Dimensions.margin) {
-                        ForEach(0..<4, id: \.self) { index in
-                            if index < currentOptions.count {
-                                LetterButton(
-                                    letter: currentOptions[index],
-                                    isCorrect: currentOptions[index] == getCorrectLetter(),
-                                    action: {
-                                        selectLetter(currentOptions[index])
-                                    }
-                                )
-                            }
+                HStack(spacing: Style.Dimensions.margin) {
+                    ForEach(0..<4, id: \.self) { index in
+                        if index < currentOptions.count {
+                            LetterButton(
+                                letter: currentOptions[index],
+                                isCorrect: currentOptions[index] == getCorrectLetter(),
+                                action: {
+                                    selectLetter(currentOptions[index])
+                                }
+                            )
                         }
                     }
-                    .padding(.horizontal, Style.Dimensions.margin)
                 }
+                .padding(.horizontal, Style.Dimensions.margin)
+                .opacity(!gameWon && !gameLost ? 1.0 : 0.0)
                 
                 // Result message - always in hierarchy, use opacity to show/hide
                 VStack(spacing: 0) {
@@ -234,6 +217,36 @@ struct LetterSelectionGameView: View {
             }
             // Don't regenerate options - keep the same options to make it more forgiving
         }
+    }
+}
+
+struct LetterSlotView: View {
+    let character: Character?
+    let isCurrent: Bool
+    let isSpace: Bool
+    
+    var body: some View {
+        let displayChar: Character = (character ?? "_")
+        
+        Text(String(displayChar))
+            .font(.system(size: 32, weight: .bold, design: .rounded))
+            .foregroundColor(isCurrent ? .accentColor : (isSpace ? .clear : .primary))
+            .frame(width: isSpace ? 20 : 40, height: 50)
+            .background {
+                if !isSpace {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(isCurrent ? Color.accentColor.opacity(0.1) : Color.clear)
+                }
+            }
+            .overlay {
+                if !isSpace {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(
+                            isCurrent ? Color.accentColor : Color.gray.opacity(0.3),
+                            lineWidth: isCurrent ? 2 : 1
+                        )
+                }
+            }
     }
 }
 
