@@ -36,7 +36,7 @@ struct SplashView: View {
                     .multilineTextAlignment(.leading)
             }
             .padding(Style.Dimensions.largeMargin)
-            .glassEffect(intensity: 0.4)
+            .liquidGlassCard()
             .padding(.horizontal, Style.Dimensions.margin)
             
             Button(action: {
@@ -58,7 +58,7 @@ struct SplashView: View {
             .ignoresSafeArea()
         })
         .buttonStyle(Style.Button.primary)
-        .background(Color(.splashBackground))
+        .background(Color(.accent))
     }
 }
 

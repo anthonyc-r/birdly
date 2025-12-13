@@ -42,63 +42,6 @@ enum Style {
     }
 }
 
-// Glass effect view modifier
-struct GlassEffect: ViewModifier {
-    let accentColor: Color
-    let intensity: Double
-    
-    init(accentColor: Color = .accentColor, intensity: Double = Style.Glass.opacity) {
-        self.accentColor = accentColor
-        self.intensity = intensity
-    }
-    
-    func body(content: Content) -> some View {
-        content
-            .background {
-                ZStack {
-                    // Base glass background with blur
-                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                        .fill(.ultraThinMaterial)
-                        .opacity(intensity)
-                    
-                    // Accent color glow
-                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                        .fill(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    accentColor.opacity(0.3),
-                                    accentColor.opacity(0.1),
-                                    accentColor.opacity(0.05)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                    
-                    // Subtle border with accent color
-                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                        .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    accentColor.opacity(0.6),
-                                    accentColor.opacity(0.2)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: Style.Glass.borderWidth
-                        )
-                }
-            }
-            .shadow(
-                color: accentColor.opacity(Style.Glass.shadowOpacity),
-                radius: Style.Glass.shadowRadius,
-                x: 0,
-                y: 4
-            )
-    }
-}
-
 // Liquid glass card modifier
 struct LiquidGlassCard: ViewModifier {
     let accentColor: Color
@@ -109,16 +52,11 @@ struct LiquidGlassCard: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .modifier(GlassEffect(accentColor: accentColor))
-            .clipShape(RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
+            .glassEffect(Glass.regular.interactive(), in: RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius))
     }
 }
 
 extension View {
-    func glassEffect(accentColor: Color = .accentColor, intensity: Double = Style.Glass.opacity) -> some View {
-        modifier(GlassEffect(accentColor: accentColor, intensity: intensity))
-    }
-    
     func liquidGlassCard(accentColor: Color = .accentColor) -> some View {
         modifier(LiquidGlassCard(accentColor: accentColor))
     }

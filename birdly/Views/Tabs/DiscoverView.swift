@@ -56,7 +56,7 @@ struct DiscoverView: View {
                                     }
                                 }
                                 .padding(.horizontal, Style.Dimensions.margin)
-                            }
+                            }.scrollClipDisabled()
                         }
                     }
                     

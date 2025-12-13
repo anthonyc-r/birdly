@@ -11,7 +11,7 @@ import Lottie
 struct LoadingView: View {
     var body: some View {
         ZStack {
-            Color(.splashBackground)
+            Color(.accent)
                 .ignoresSafeArea()
             
             VStack(spacing: Style.Dimensions.largeMargin) {

@@ -116,6 +116,7 @@ struct BirdLogView: View {
                     }
                 }
             }
+            .background(Color(.clear))
             .navigationTitle("Bird Log")
             .navigationBarTitleDisplayMode(.large)
             .searchable(text: $searchText, prompt: "Search birds...")
