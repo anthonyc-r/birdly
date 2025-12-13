@@ -46,6 +46,7 @@ struct WordSearchGameView: View {
             VStack(spacing: Style.Dimensions.margin) {
                 // Bird image at the top - fills available space
                 BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
+                    .featherEffect()
                 
                 Spacer()
                 
@@ -231,9 +232,15 @@ struct WordSearchGameView: View {
                             .font(Style.Font.b3)
                             .foregroundColor(incorrectAttempts > 0 ? .orange : .secondary)
                     }
+                    Spacer()
                 }
                 .padding(Style.Dimensions.margin)
             }
+        }
+        .background {
+            BirdImageView(imageSource: birdImage.imageSource, contentMode: .fill)
+                .ignoresSafeArea()
+                .overlay(Material.thin)
         }
         .onAppear {
             Task(priority: .userInitiated) {
