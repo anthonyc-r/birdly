@@ -40,6 +40,13 @@ enum Style {
         static let shadowRadius: CGFloat = 10
         static let shadowOpacity: Double = 0.2
     }
+    
+    enum Feather {
+        static let shadowRadius: CGFloat = 8
+        static let shadowOffset: CGFloat = 4
+        static let shadowOpacity: Double = 0.15
+        static let opacity: Double = 0.95
+    }
 }
 
 // Liquid glass card modifier
@@ -59,5 +66,39 @@ struct LiquidGlassCard: ViewModifier {
 extension View {
     func liquidGlassCard(accentColor: Color = .accentColor) -> some View {
         modifier(LiquidGlassCard(accentColor: accentColor))
+    }
+}
+
+// Feather effect modifier - creates a light, airy, soft appearance
+struct FeatherEffect: ViewModifier {
+    let shadowColor: Color
+    let intensity: Double
+    
+    init(shadowColor: Color = .black, intensity: Double = 1.0) {
+        self.shadowColor = shadowColor
+        self.intensity = intensity
+    }
+    
+    func body(content: Content) -> some View {
+        content
+            .opacity(Style.Feather.opacity)
+            .shadow(
+                color: shadowColor.opacity(Style.Feather.shadowOpacity * intensity),
+                radius: Style.Feather.shadowRadius * intensity,
+                x: 0,
+                y: Style.Feather.shadowOffset * intensity
+            )
+            .shadow(
+                color: shadowColor.opacity(Style.Feather.shadowOpacity * 0.5 * intensity),
+                radius: Style.Feather.shadowRadius * 1.5 * intensity,
+                x: 0,
+                y: Style.Feather.shadowOffset * 1.5 * intensity
+            )
+    }
+}
+
+extension View {
+    func featherEffect(shadowColor: Color = .black, intensity: Double = 1.0) -> some View {
+        modifier(FeatherEffect(shadowColor: shadowColor, intensity: intensity))
     }
 }
