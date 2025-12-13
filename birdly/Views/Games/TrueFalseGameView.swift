@@ -155,6 +155,7 @@ struct TrueFalseButton: View {
         Button(action: action) {
             Image(systemName: value ? "checkmark" : "xmark")
                 .resizable()
+                .fontWeight(.semibold)
                 .frame(width: 20, height: 20)
                 .foregroundColor(buttonColors.text)
                 .padding(Style.Dimensions.largeMargin * 1.5)
