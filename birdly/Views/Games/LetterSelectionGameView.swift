@@ -25,8 +25,12 @@ struct LetterSelectionGameView: View {
         bird.name.uppercased()
     }
     
+    private var birdNameWithoutSpaces: String {
+        birdName.filter { $0 != " " }
+    }
+    
     private var nameLength: Int {
-        birdName.count
+        birdNameWithoutSpaces.count
     }
     
     var body: some View {
@@ -41,27 +45,29 @@ struct LetterSelectionGameView: View {
                     .font(Style.Font.h2.weight(.semibold))
                     .padding(.top, Style.Dimensions.largeMargin)
                 
-                Spacer()
-                
                 // Word display with underscores (wrapping across multiple lines)
                 let columns = [
                     GridItem(.adaptive(minimum: 48), spacing: 8)
                 ]
                 
-                LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
-                    ForEach(0..<nameLength, id: \.self) { index in
-                        let char = filledLetters[safe: index]
-                        let isSpace = char == " "
-                        let isCurrent = index == currentPosition && !gameWon && !gameLost
-                        
-                        LetterSlotView(
-                            character: char ?? nil,
-                            isCurrent: isCurrent,
-                            isSpace: isSpace
-                        )
+                HStack {
+                    Spacer()
+                    LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
+                        ForEach(0..<nameLength, id: \.self) { index in
+                            let char = filledLetters[safe: index]
+                            let isCurrent = index == currentPosition && !gameWon && !gameLost
+                            
+                            LetterSlotView(
+                                character: char ?? nil,
+                                isCurrent: isCurrent
+                            )
+                        }
                     }
+                    .padding(.horizontal, Style.Dimensions.margin)
+                    Spacer()
                 }
-                .padding(.horizontal, Style.Dimensions.margin)
+                
+                Spacer()
                 
                 // Letter options
                 HStack(spacing: Style.Dimensions.margin) {
@@ -117,15 +123,8 @@ struct LetterSelectionGameView: View {
     
     private func setupGame() {
         // Initialize filled letters array with nils (showing as underscores)
-        // Auto-fill spaces
-        filledLetters = birdName.map { char in
-            char == " " ? " " : nil
-        }
-        // Find first non-space position
+        filledLetters = Array(repeating: nil, count: nameLength)
         currentPosition = 0
-        while currentPosition < nameLength && filledLetters[currentPosition] != nil {
-            currentPosition += 1
-        }
         incorrectAttempts = 0
         gameWon = false
         gameLost = false
@@ -134,11 +133,11 @@ struct LetterSelectionGameView: View {
     }
     
     private func getCorrectLetter() -> Character {
-        guard currentPosition < birdName.count else {
+        guard currentPosition < birdNameWithoutSpaces.count else {
             return " "
         }
-        let index = birdName.index(birdName.startIndex, offsetBy: currentPosition)
-        return birdName[index]
+        let index = birdNameWithoutSpaces.index(birdNameWithoutSpaces.startIndex, offsetBy: currentPosition)
+        return birdNameWithoutSpaces[index]
     }
     
     private func generateOptions() {
@@ -170,11 +169,6 @@ struct LetterSelectionGameView: View {
             // Correct letter selected
             filledLetters[currentPosition] = letter
             currentPosition += 1
-            
-            // Skip spaces automatically
-            while currentPosition < nameLength && filledLetters[currentPosition] != nil {
-                currentPosition += 1
-            }
             
             // Check if word is complete
             if currentPosition >= nameLength {
@@ -223,30 +217,17 @@ struct LetterSelectionGameView: View {
 struct LetterSlotView: View {
     let character: Character?
     let isCurrent: Bool
-    let isSpace: Bool
     
     var body: some View {
         let displayChar: Character = (character ?? "_")
         
         Text(String(displayChar))
             .font(.system(size: 32, weight: .bold, design: .rounded))
-            .foregroundColor(isCurrent ? .accentColor : (isSpace ? .clear : .primary))
-            .frame(width: isSpace ? 20 : 40, height: 50)
-            .background {
-                if !isSpace {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(isCurrent ? Color.accentColor.opacity(0.1) : Color.clear)
-                }
-            }
-            .overlay {
-                if !isSpace {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(
-                            isCurrent ? Color.accentColor : Color.gray.opacity(0.3),
-                            lineWidth: isCurrent ? 2 : 1
-                        )
-                }
-            }
+            .foregroundColor(isCurrent ? .accentColor : .primary)
+            .frame(width: 40, height: 50)
+            .padding(Style.Dimensions.smallMargin * 0.5)
+            .liquidGlassCard()
+            .opacity(isCurrent || character != nil ? 1.0 : 0.5)
     }
 }
 
@@ -274,7 +255,7 @@ struct LetterButton: View {
 #Preview {
     let bird = Bird(
         id: UUID(),
-        name: "Robin",
+        name: "Robin Test",
         scientificName: "Erithacus rubecula",
         description: "Distinctive orange-red breast",
         images: [
