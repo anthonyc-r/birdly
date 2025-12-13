@@ -181,7 +181,7 @@ struct WordSearchGameView: View {
                         y: 4
                     )
                     .padding(.horizontal, Style.Dimensions.margin)
-                    
+                    Spacer()
                     // Result message or hint text at the bottom
                     if showResult {
                         Text(foundWord ? "Correct! You found \(bird.name)! ✓" : (incorrectAttempts >= 3 ? "The answer is \(bird.name)" : "Not quite. Try again!"))

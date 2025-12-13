@@ -17,56 +17,13 @@ struct WordSearchCellView: View {
     
     var body: some View {
         Text(String(character))
+            .foregroundStyle(textColor)
             .font(.system(size: 22, weight: .semibold, design: .rounded))
             .frame(width: cellSize, height: cellSize)
-            .background {
-                ZStack {
-                    // Base glass background
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .opacity(0.7)
-                    
-                    // Color overlay based on state
-                    Circle()
-                        .fill(backgroundColor)
-                    
-                    // Accent glow for selected state
-                    if isSelected && !isPartOfWord {
-                        Circle()
-                            .fill(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color.accentColor.opacity(0.4),
-                                        Color.accentColor.opacity(0.2)
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                    }
-                }
-            }
-            .foregroundColor(textColor)
-            .overlay(
-                Circle()
-                    .stroke(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                borderColor.opacity(0.9),
-                                borderColor.opacity(0.5)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: isSelected ? 3 : 1.5
-                    )
-            )
-            .shadow(
-                color: borderColor.opacity(0.4),
-                radius: isSelected ? 6 : 3,
-                x: 0,
-                y: 2
-            )
+            .padding(Style.Dimensions.smallMargin)
+            .overlay(Circle()
+                    .stroke(borderColor, lineWidth: 1))
+            .glassEffect(.regular.tint(backgroundColor))
     }
     
     private var backgroundColor: Color {
@@ -97,3 +54,11 @@ struct WordSearchCellView: View {
     }
 }
 
+
+#Preview {
+    VStack {
+        HStack {
+            WordSearchCellView(character: "C", position: .init(row: 1, col: 1), cellSize: 50, isSelected: false, isPartOfWord: true, foundWord: false)
+        }
+    }
+}
