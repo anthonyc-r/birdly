@@ -36,7 +36,6 @@ struct SplashView: View {
                     .multilineTextAlignment(.leading)
             }
             .padding(Style.Dimensions.largeMargin)
-            .liquidGlassCard()
             .padding(.horizontal, Style.Dimensions.margin)
             
             Button(action: {
