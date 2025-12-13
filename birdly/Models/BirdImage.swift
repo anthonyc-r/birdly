@@ -77,7 +77,6 @@ final class BirdImage {
         // At 50% mastery: 50% multiple choice, 50% word search
         // At 100% mastery: 0% multiple choice, 100% word search
         let wordSearchWeight = mastery / 100.0
-        let multipleChoiceWeight = 1.0 - wordSearchWeight
         
         // Generate random value between 0 and 1
         let random = Double.random(in: 0...1)

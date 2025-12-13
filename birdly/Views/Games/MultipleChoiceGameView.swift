@@ -36,57 +36,59 @@ struct MultipleChoiceGameView: View {
     
     var body: some View {
         VStack(spacing: Style.Dimensions.largeMargin) {
-            // Question
-            Text("What bird is this?")
-                .font(Style.Font.h2.weight(.semibold))
-                .padding(.top, Style.Dimensions.largeMargin)
-            
             // Bird image
             BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
-                .frame(maxHeight: 300)
-                .padding(Style.Dimensions.margin)
-            Spacer()
-            // Answer options
-            VStack(spacing: Style.Dimensions.margin) {
-                ForEach(shuffledOptions) { bird in
-                    AnswerButton(
-                        bird: bird,
-                        isSelected: selectedAnswer == bird.id,
-                        isCorrect: showResult && bird.id == correctBird.id,
-                        isWrong: showResult && selectedAnswer == bird.id && bird.id != correctBird.id,
-                        isDisabled: showResult
-                    ) {
-                        if !showResult {
-                            selectedAnswer = bird.id
-                            wasCorrect = bird.id == correctBird.id
-                            withAnimation {
-                                showResult = true
-                            }
-                            
-                            // Auto-advance after showing result
-                            // Cancel any existing task first
-                            completionTask?.cancel()
-                            completionTask = Task {
-                                try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
-                                // Check if task was cancelled or view is still valid
-                                if !Task.isCancelled {
-                                    onComplete(correctBird.id, wasCorrect)
+            
+            VStack(spacing: Style.Dimensions.largeMargin) {
+                // Question
+                Text("What bird is this?")
+                    .font(Style.Font.h2.weight(.semibold))
+                    .padding(.top, Style.Dimensions.largeMargin)
+                
+                Spacer()
+                
+                // Answer options
+                VStack(spacing: Style.Dimensions.margin) {
+                    ForEach(shuffledOptions) { bird in
+                        AnswerButton(
+                            bird: bird,
+                            isSelected: selectedAnswer == bird.id,
+                            isCorrect: showResult && bird.id == correctBird.id,
+                            isWrong: showResult && selectedAnswer == bird.id && bird.id != correctBird.id,
+                            isDisabled: showResult
+                        ) {
+                            if !showResult {
+                                selectedAnswer = bird.id
+                                wasCorrect = bird.id == correctBird.id
+                                withAnimation {
+                                    showResult = true
+                                }
+                                
+                                // Auto-advance after showing result
+                                // Cancel any existing task first
+                                completionTask?.cancel()
+                                completionTask = Task {
+                                    try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+                                    // Check if task was cancelled or view is still valid
+                                    if !Task.isCancelled {
+                                        onComplete(correctBird.id, wasCorrect)
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                .padding(.horizontal, Style.Dimensions.margin)
+                // Result message
+                Text(wasCorrect ? "Correct! ✓" : "Not quite. This is a \(correctBird.name)")
+                    .font(Style.Font.b2)
+                    .foregroundColor(wasCorrect ? .green : .red)
+                    .padding(.top, Style.Dimensions.margin)
+                    .transition(.opacity)
+                    .opacity(showResult ? 1.0 : 0.0)
             }
-            .padding(.horizontal, Style.Dimensions.margin)
-            // Result message
-            Text(wasCorrect ? "Correct! ✓" : "Not quite. This is a \(correctBird.name)")
-                .font(Style.Font.b2)
-                .foregroundColor(wasCorrect ? .green : .red)
-                .padding(.top, Style.Dimensions.margin)
-                .transition(.opacity)
-                .opacity(showResult ? 1.0 : 0.0)
+            .padding(Style.Dimensions.margin)
         }
-        .padding(Style.Dimensions.margin)
         .onAppear {
             setupOptions()
         }

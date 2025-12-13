@@ -1,0 +1,251 @@
+{
+  "_comment": "Image formats: Use 'imageName' (string) for asset catalog images (backward compatible), or 'imageSource' (object) with 'type': 'asset'/'url' and 'value' for flexible image sources. Each bird now has 3 images: perched, flight_side, and flight_underbelly.",
+  "id": "00000000-0000-0000-0000-000000000002",
+  "title": "Winter Birds",
+  "subtitle": "Discover the birds that visit during the colder months",
+  "progress": 0.0,
+  "imageName": "Winter Birds",
+  "birds": [
+    {
+      "id": "00000000-0000-0000-0000-000000000111",
+      "name": "Bullfinch",
+      "scientificName": "Pyrrhula pyrrhula",
+      "description": "Males have a striking pink-red breast and face, with black cap and wings. Females are more subdued with grey-brown tones.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000231",
+          "variant": "perched",
+          "imageName": "Bullfinch Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000232",
+          "variant": "flight_side",
+          "imageName": "Bullfinch Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000233",
+          "variant": "flight_underbelly",
+          "imageName": "Bullfinch Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000112",
+      "name": "Chaffinch",
+      "scientificName": "Fringilla coelebs",
+      "description": "Males have a pink breast, blue-grey head, and distinctive white wing bars. Females are brown with greenish tones.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000234",
+          "variant": "perched",
+          "imageName": "Chaffinch Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000235",
+          "variant": "flight_side",
+          "imageName": "Chaffinch Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000236",
+          "variant": "flight_underbelly",
+          "imageName": "Chaffinch Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000113",
+      "name": "Coal Tit",
+      "scientificName": "Periparus ater",
+      "description": "Smallest UK tit with black head, white cheeks, and white patch on the back of the neck. Often seen at feeders.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000237",
+          "variant": "perched",
+          "imageName": "Coal Tit Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000238",
+          "variant": "flight_side",
+          "imageName": "Coal Tit Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000239",
+          "variant": "flight_underbelly",
+          "imageName": "Coal Tit Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000114",
+      "name": "Collared Dove",
+      "scientificName": "Streptopelia decaocto",
+      "description": "Pale grey-brown dove with distinctive black half-collar on the back of the neck. Often seen in pairs.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000240",
+          "variant": "perched",
+          "imageName": "Collared Dove Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000241",
+          "variant": "flight_side",
+          "imageName": "Collared Dove Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000242",
+          "variant": "flight_underbelly",
+          "imageName": "Collared Dove Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000115",
+      "name": "Dunnock",
+      "scientificName": "Prunella modularis",
+      "description": "Small, streaky brown bird with grey head and breast. Often seen hopping on the ground. Also known as hedge sparrow.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000243",
+          "variant": "perched",
+          "imageName": "Dunnock Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000244",
+          "variant": "flight_side",
+          "imageName": "Dunnock Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000245",
+          "variant": "flight_underbelly",
+          "imageName": "Dunnock Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000116",
+      "name": "Greenfinch",
+      "scientificName": "Chloris chloris",
+      "description": "Olive-green and yellow finch with bright yellow wing bars. Males are more colourful than females.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000246",
+          "variant": "perched",
+          "imageName": "Greenfinch Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000247",
+          "variant": "flight_side",
+          "imageName": "Greenfinch Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000248",
+          "variant": "flight_underbelly",
+          "imageName": "Greenfinch Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000117",
+      "name": "Jackdaw",
+      "scientificName": "Coloeus monedula",
+      "description": "Small black crow with grey nape and pale blue eyes. Often seen in small groups or pairs.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000249",
+          "variant": "perched",
+          "imageName": "Jackdaw Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000250",
+          "variant": "flight_side",
+          "imageName": "Jackdaw Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000251",
+          "variant": "flight_underbelly",
+          "imageName": "Jackdaw Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000118",
+      "name": "Nuthatch",
+      "scientificName": "Sitta europaea",
+      "description": "Blue-grey upperparts, orange-buff underparts, and black eye stripe. Can climb down trees head-first.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000252",
+          "variant": "perched",
+          "imageName": "Nuthatch Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000253",
+          "variant": "flight_side",
+          "imageName": "Nuthatch Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000254",
+          "variant": "flight_underbelly",
+          "imageName": "Nuthatch Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000119",
+      "name": "Song Thrush",
+      "scientificName": "Turdus philomelos",
+      "description": "Brown upperparts with spotted breast. Known for its beautiful song and habit of smashing snails on stones.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000255",
+          "variant": "perched",
+          "imageName": "Song Thrush Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000256",
+          "variant": "flight_side",
+          "imageName": "Song Thrush Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000257",
+          "variant": "flight_underbelly",
+          "imageName": "Song Thrush Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000120",
+      "name": "Wren",
+      "scientificName": "Troglodytes troglodytes",
+      "description": "Tiny brown bird with a short, cocked tail. One of the UK's smallest birds with a surprisingly loud song.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000258",
+          "variant": "perched",
+          "imageName": "Wren Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000259",
+          "variant": "flight_side",
+          "imageName": "Wren Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000260",
+          "variant": "flight_underbelly",
+          "imageName": "Wren Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    }
+  ]
+}
+

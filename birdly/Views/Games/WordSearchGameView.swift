@@ -46,195 +46,197 @@ struct WordSearchGameView: View {
             VStack(spacing: Style.Dimensions.margin) {
                 // Bird image at the top - fills available space
                 BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(Style.Dimensions.margin)
                 
-                // Word search grid
-                ZStack {
-                    if isGenerating {
-                        // Loading indicator
-                        ProgressView()
-                            .scaleEffect(1.5)
-                            .tint(.accentColor)
-                    }
-                    
-                    // Draw lines connecting selected cells
-                    if !selectedPath.isEmpty && !cellPositions.isEmpty && !isGenerating {
-                        Path { path in
-                            for (index, position) in selectedPath.enumerated() {
-                                if let point = cellPositions[position] {
-                                    if index == 0 {
-                                        path.move(to: point)
-                                    } else {
-                                        path.addLine(to: point)
+                Spacer()
+                
+                VStack(spacing: Style.Dimensions.margin) {
+                    // Word search grid
+                    ZStack {
+                        if isGenerating {
+                            // Loading indicator
+                            ProgressView()
+                                .scaleEffect(1.5)
+                                .tint(.accentColor)
+                        }
+                        
+                        // Draw lines connecting selected cells
+                        if !selectedPath.isEmpty && !cellPositions.isEmpty && !isGenerating {
+                            Path { path in
+                                for (index, position) in selectedPath.enumerated() {
+                                    if let point = cellPositions[position] {
+                                        if index == 0 {
+                                            path.move(to: point)
+                                        } else {
+                                            path.addLine(to: point)
+                                        }
                                     }
                                 }
                             }
+                            .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
                         }
-                        .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-                    }
-                    
-                    // Grid of circular letters
-                    if !isGenerating {
-                        VStack(spacing: cellSpacing) {
-                            ForEach(0..<gridSize, id: \.self) { row in
-                                HStack(spacing: cellSpacing) {
-                                    ForEach(0..<gridSize, id: \.self) { col in
-                                        let position = GridPosition(row: row, col: col)
-                                        let isSelected = selectedCells.contains(position)
-                                        let isPartOfWord = isCellPartOfWord(position)
-                                        
-                                        Text(String(grid[safe: row]?[safe: col] ?? " "))
-                                            .font(.system(size: 22, weight: .semibold, design: .rounded))
-                                            .frame(width: cellSize, height: cellSize)
-                                            .background {
-                                                ZStack {
-                                                    // Base glass background
-                                                    Circle()
-                                                        .fill(.ultraThinMaterial)
-                                                        .opacity(0.7)
-                                                    
-                                                    // Color overlay based on state
-                                                    Circle()
-                                                        .fill(backgroundColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
-                                                    
-                                                    // Accent glow for selected state
-                                                    if isSelected && !isPartOfWord {
+                        
+                        // Grid of circular letters
+                        if !isGenerating {
+                            VStack(spacing: cellSpacing) {
+                                ForEach(0..<gridSize, id: \.self) { row in
+                                    HStack(spacing: cellSpacing) {
+                                        ForEach(0..<gridSize, id: \.self) { col in
+                                            let position = GridPosition(row: row, col: col)
+                                            let isSelected = selectedCells.contains(position)
+                                            let isPartOfWord = isCellPartOfWord(position)
+                                            
+                                            Text(String(grid[safe: row]?[safe: col] ?? " "))
+                                                .font(.system(size: 22, weight: .semibold, design: .rounded))
+                                                .frame(width: cellSize, height: cellSize)
+                                                .background {
+                                                    ZStack {
+                                                        // Base glass background
                                                         Circle()
-                                                            .fill(
-                                                                LinearGradient(
-                                                                    gradient: Gradient(colors: [
-                                                                        Color.accentColor.opacity(0.4),
-                                                                        Color.accentColor.opacity(0.2)
-                                                                    ]),
-                                                                    startPoint: .topLeading,
-                                                                    endPoint: .bottomTrailing
+                                                            .fill(.ultraThinMaterial)
+                                                            .opacity(0.7)
+                                                        
+                                                        // Color overlay based on state
+                                                        Circle()
+                                                            .fill(backgroundColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
+                                                        
+                                                        // Accent glow for selected state
+                                                        if isSelected && !isPartOfWord {
+                                                            Circle()
+                                                                .fill(
+                                                                    LinearGradient(
+                                                                        gradient: Gradient(colors: [
+                                                                            Color.accentColor.opacity(0.4),
+                                                                            Color.accentColor.opacity(0.2)
+                                                                        ]),
+                                                                        startPoint: .topLeading,
+                                                                        endPoint: .bottomTrailing
+                                                                    )
                                                                 )
-                                                            )
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            .foregroundColor(textColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
-                                            .overlay(
-                                                Circle()
-                                                    .stroke(
-                                                        LinearGradient(
-                                                            gradient: Gradient(colors: [
-                                                                borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.9),
-                                                                borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.5)
-                                                            ]),
-                                                            startPoint: .topLeading,
-                                                            endPoint: .bottomTrailing
-                                                        ),
-                                                        lineWidth: isSelected ? 3 : 1.5
-                                                    )
-                                            )
-                                            .shadow(
-                                                color: borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.4),
-                                                radius: isSelected ? 6 : 3,
-                                                x: 0,
-                                                y: 2
-                                            )
-                                            .background(
-                                                GeometryReader { geometry in
-                                                    Color.clear
-                                                        .preference(
-                                                            key: CellPositionKey.self,
-                                                            value: [position: CGPoint(
-                                                                x: geometry.frame(in: .named("grid")).midX,
-                                                                y: geometry.frame(in: .named("grid")).midY
-                                                            )]
+                                                .foregroundColor(textColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord))
+                                                .overlay(
+                                                    Circle()
+                                                        .stroke(
+                                                            LinearGradient(
+                                                                gradient: Gradient(colors: [
+                                                                    borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.9),
+                                                                    borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.5)
+                                                                ]),
+                                                                startPoint: .topLeading,
+                                                                endPoint: .bottomTrailing
+                                                            ),
+                                                            lineWidth: isSelected ? 3 : 1.5
                                                         )
-                                                }
-                                            )
+                                                )
+                                                .shadow(
+                                                    color: borderColor(for: position, isSelected: isSelected, isPartOfWord: isPartOfWord).opacity(0.4),
+                                                    radius: isSelected ? 6 : 3,
+                                                    x: 0,
+                                                    y: 2
+                                                )
+                                                .background(
+                                                    GeometryReader { geometry in
+                                                        Color.clear
+                                                            .preference(
+                                                                key: CellPositionKey.self,
+                                                                value: [position: CGPoint(
+                                                                    x: geometry.frame(in: .named("grid")).midX,
+                                                                    y: geometry.frame(in: .named("grid")).midY
+                                                                )]
+                                                            )
+                                                    }
+                                                )
+                                        }
                                     }
                                 }
                             }
+                            .coordinateSpace(name: "grid")
                         }
-                        .coordinateSpace(name: "grid")
                     }
-                }
-                .frame(
-                    width: CGFloat(gridSize) * cellSize + CGFloat(gridSize - 1) * cellSpacing,
-                    height: CGFloat(gridSize) * cellSize + CGFloat(gridSize - 1) * cellSpacing
-                )
-                .contentShape(Rectangle())
-                .onPreferenceChange(CellPositionKey.self) { positions in
-                    cellPositions = positions
-                }
-                .gesture(
-                    DragGesture(minimumDistance: 0, coordinateSpace: .named("grid"))
-                        .onChanged { value in
-                            guard incorrectAttempts < 3 else { return }
-                            
-                            if !hasStartedInteraction {
-                                hasStartedInteraction = true
-                            }
-                            
-                            // Find which cell the drag is over by checking distance to cell centers
-                            let dragPoint = value.location
-                            var closestPosition: GridPosition?
-                            var minDistance: CGFloat = .infinity
-                            
-                            for (position, center) in cellPositions {
-                                let distance = sqrt(
-                                    pow(dragPoint.x - center.x, 2) + 
-                                    pow(dragPoint.y - center.y, 2)
-                                )
+                    .frame(
+                        width: CGFloat(gridSize) * cellSize + CGFloat(gridSize - 1) * cellSpacing,
+                        height: CGFloat(gridSize) * cellSize + CGFloat(gridSize - 1) * cellSpacing
+                    )
+                    .contentShape(Rectangle())
+                    .onPreferenceChange(CellPositionKey.self) { positions in
+                        cellPositions = positions
+                    }
+                    .gesture(
+                        DragGesture(minimumDistance: 0, coordinateSpace: .named("grid"))
+                            .onChanged { value in
+                                guard incorrectAttempts < 3 else { return }
                                 
-                                // Check if within the circle (radius is cellSize/2)
-                                if distance <= cellSize / 2 && distance < minDistance {
-                                    minDistance = distance
-                                    closestPosition = position
+                                if !hasStartedInteraction {
+                                    hasStartedInteraction = true
+                                }
+                                
+                                // Find which cell the drag is over by checking distance to cell centers
+                                let dragPoint = value.location
+                                var closestPosition: GridPosition?
+                                var minDistance: CGFloat = .infinity
+                                
+                                for (position, center) in cellPositions {
+                                    let distance = sqrt(
+                                        pow(dragPoint.x - center.x, 2) +
+                                        pow(dragPoint.y - center.y, 2)
+                                    )
+                                    
+                                    // Check if within the circle (radius is cellSize/2)
+                                    if distance <= cellSize / 2 && distance < minDistance {
+                                        minDistance = distance
+                                        closestPosition = position
+                                    }
+                                }
+                                
+                                if let position = closestPosition {
+                                    handleCellSelection(at: position)
                                 }
                             }
-                            
-                            if let position = closestPosition {
-                                handleCellSelection(at: position)
-                            }
-                        }
-                        .onEnded { value in
-                            guard incorrectAttempts < 3 else { return }
-                            
-                            // Check if this was a tap (very small movement)
-                            let distance = sqrt(pow(value.translation.width, 2) + pow(value.translation.height, 2))
-                            
-                            if distance < 5 && selectedPath.count == 1 {
-                                // Single tap - check word immediately
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            .onEnded { value in
+                                guard incorrectAttempts < 3 else { return }
+                                
+                                // Check if this was a tap (very small movement)
+                                let distance = sqrt(pow(value.translation.width, 2) + pow(value.translation.height, 2))
+                                
+                                if distance < 5 && selectedPath.count == 1 {
+                                    // Single tap - check word immediately
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        checkWord()
+                                        startPosition = nil
+                                    }
+                                } else {
+                                    // Drag ended - check word
                                     checkWord()
                                     startPosition = nil
                                 }
-                            } else {
-                                // Drag ended - check word
-                                checkWord()
-                                startPosition = nil
                             }
-                        }
-                )
-                .disabled(incorrectAttempts >= 3 || isGenerating)
-                .padding(Style.Dimensions.margin)
-                .shadow(
-                    color: Color.accentColor.opacity(0.2),
-                    radius: 10,
-                    x: 0,
-                    y: 4
-                )
-                .padding(.horizontal, Style.Dimensions.margin)
-                
-                // Result message or hint text at the bottom
-                if showResult {
-                    Text(foundWord ? "Correct! You found \(bird.name)! ✓" : (incorrectAttempts >= 3 ? "The answer is \(bird.name)" : "Not quite. Try again!"))
-                        .font(Style.Font.b2)
-                        .foregroundColor(foundWord ? .green : .orange)
-                        .transition(.opacity)
-                } else {
-                    Text(incorrectAttempts > 0 ? "Attempts: \(incorrectAttempts)/3" : "Drag to select letters")
-                        .font(Style.Font.b3)
-                        .foregroundColor(incorrectAttempts > 0 ? .orange : .secondary)
+                    )
+                    .disabled(incorrectAttempts >= 3 || isGenerating)
+                    .padding(Style.Dimensions.margin)
+                    .shadow(
+                        color: Color.accentColor.opacity(0.2),
+                        radius: 10,
+                        x: 0,
+                        y: 4
+                    )
+                    .padding(.horizontal, Style.Dimensions.margin)
+                    
+                    // Result message or hint text at the bottom
+                    if showResult {
+                        Text(foundWord ? "Correct! You found \(bird.name)! ✓" : (incorrectAttempts >= 3 ? "The answer is \(bird.name)" : "Not quite. Try again!"))
+                            .font(Style.Font.b2)
+                            .foregroundColor(foundWord ? .green : .orange)
+                            .transition(.opacity)
+                    } else {
+                        Text(incorrectAttempts > 0 ? "Attempts: \(incorrectAttempts)/3" : "Drag to select letters")
+                            .font(Style.Font.b3)
+                            .foregroundColor(incorrectAttempts > 0 ? .orange : .secondary)
+                    }
                 }
+                .padding(Style.Dimensions.margin)
             }
-            .padding(Style.Dimensions.margin)
         }
         .onAppear {
             Task(priority: .userInitiated) {

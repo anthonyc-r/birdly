@@ -31,92 +31,92 @@ struct LetterSelectionGameView: View {
     
     var body: some View {
         VStack(spacing: Style.Dimensions.largeMargin) {
-            // Question
-            Text("What bird is this?")
-                .font(Style.Font.h2.weight(.semibold))
-                .padding(.top, Style.Dimensions.largeMargin)
-            
             // Bird image
             BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
-                .frame(maxHeight: 300)
-                .padding(Style.Dimensions.margin)
             
-            Spacer()
-            
-            // Word display with underscores (wrapping across multiple lines)
-            let columns = [
-                GridItem(.adaptive(minimum: 48), spacing: 8)
-            ]
-            
-            LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
-                ForEach(0..<nameLength, id: \.self) { index in
-                    let char = filledLetters[safe: index]
-                    // How is this still an issue in swift after all these years?!
-                    let displayChar: Character = (char ?? "_") ?? "_"
-                    let isSpace = char == " "
-                    let isCurrent = index == currentPosition && !gameWon && !gameLost
-                    
-                    Text(String(displayChar))
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundColor(isCurrent ? .accentColor : (isSpace ? .clear : .primary))
-                        .frame(width: isSpace ? 20 : 40, height: 50)
-                        .background {
-                            if !isSpace {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(isCurrent ? Color.accentColor.opacity(0.1) : Color.clear)
-                            }
-                        }
-                        .overlay {
-                            if !isSpace {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(
-                                        isCurrent ? Color.accentColor : Color.gray.opacity(0.3),
-                                        lineWidth: isCurrent ? 2 : 1
-                                    )
-                            }
-                        }
-                }
-            }
-            .padding(.horizontal, Style.Dimensions.margin)
-            
-            // Letter options
-            if !gameWon && !gameLost {
-                HStack(spacing: Style.Dimensions.margin) {
-                    ForEach(0..<4, id: \.self) { index in
-                        if index < currentOptions.count {
-                            LetterButton(
-                                letter: currentOptions[index],
-                                isCorrect: currentOptions[index] == getCorrectLetter(),
-                                action: {
-                                    selectLetter(currentOptions[index])
+            VStack(spacing: Style.Dimensions.largeMargin) {
+                // Question
+                Text("What bird is this?")
+                    .font(Style.Font.h2.weight(.semibold))
+                    .padding(.top, Style.Dimensions.largeMargin)
+                
+                Spacer()
+                
+                // Word display with underscores (wrapping across multiple lines)
+                let columns = [
+                    GridItem(.adaptive(minimum: 48), spacing: 8)
+                ]
+                
+                LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
+                    ForEach(0..<nameLength, id: \.self) { index in
+                        let char = filledLetters[safe: index]
+                        // How is this still an issue in swift after all these years?!
+                        let displayChar: Character = (char ?? "_") ?? "_"
+                        let isSpace = char == " "
+                        let isCurrent = index == currentPosition && !gameWon && !gameLost
+                        
+                        Text(String(displayChar))
+                            .font(.system(size: 32, weight: .bold, design: .rounded))
+                            .foregroundColor(isCurrent ? .accentColor : (isSpace ? .clear : .primary))
+                            .frame(width: isSpace ? 20 : 40, height: 50)
+                            .background {
+                                if !isSpace {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(isCurrent ? Color.accentColor.opacity(0.1) : Color.clear)
                                 }
-                            )
-                        }
+                            }
+                            .overlay {
+                                if !isSpace {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(
+                                            isCurrent ? Color.accentColor : Color.gray.opacity(0.3),
+                                            lineWidth: isCurrent ? 2 : 1
+                                        )
+                                }
+                            }
                     }
                 }
                 .padding(.horizontal, Style.Dimensions.margin)
-            }
-            
-            // Result message - always in hierarchy, use opacity to show/hide
-            VStack(spacing: 0) {
-                // Game result message
-                Text(gameWon ? "Correct! ✓" : "Game Over. The answer is \(bird.name)")
-                    .font(Style.Font.b2)
-                    .foregroundColor(gameWon ? .green : .red)
-                    .padding(.top, Style.Dimensions.margin)
-                    .opacity(showResult ? 1.0 : 0.0)
-                    .transition(.opacity)
                 
-                // Wrong attempts counter
-                Text("Wrong attempts: \(incorrectAttempts)/3")
-                    .font(Style.Font.b3)
-                    .foregroundColor(.orange)
-                    .padding(.top, Style.Dimensions.margin)
-                    .opacity(!showResult && incorrectAttempts > 0 ? 1.0 : 0.0)
+                // Letter options
+                if !gameWon && !gameLost {
+                    HStack(spacing: Style.Dimensions.margin) {
+                        ForEach(0..<4, id: \.self) { index in
+                            if index < currentOptions.count {
+                                LetterButton(
+                                    letter: currentOptions[index],
+                                    isCorrect: currentOptions[index] == getCorrectLetter(),
+                                    action: {
+                                        selectLetter(currentOptions[index])
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    .padding(.horizontal, Style.Dimensions.margin)
+                }
+                
+                // Result message - always in hierarchy, use opacity to show/hide
+                VStack(spacing: 0) {
+                    // Game result message
+                    Text(gameWon ? "Correct! ✓" : "Game Over. The answer is \(bird.name)")
+                        .font(Style.Font.b2)
+                        .foregroundColor(gameWon ? .green : .red)
+                        .padding(.top, Style.Dimensions.margin)
+                        .opacity(showResult ? 1.0 : 0.0)
+                        .transition(.opacity)
+                    
+                    // Wrong attempts counter
+                    Text("Wrong attempts: \(incorrectAttempts)/3")
+                        .font(Style.Font.b3)
+                        .foregroundColor(.orange)
+                        .padding(.top, Style.Dimensions.margin)
+                        .opacity(!showResult && incorrectAttempts > 0 ? 1.0 : 0.0)
+                }
+                .frame(height: 50) // Reserve space to prevent layout shifts
             }
-            .frame(height: 50) // Reserve space to prevent layout shifts
+            .padding(Style.Dimensions.margin)
         }
-        .padding(Style.Dimensions.margin)
         .onAppear {
             setupGame()
         }

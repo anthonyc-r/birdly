@@ -19,8 +19,6 @@ struct IntroductionGameView: View {
             VStack(spacing: Style.Dimensions.largeMargin) {
                 // Bird image
                 BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
-                    .frame(maxHeight: 300)
-                    .padding(Style.Dimensions.margin)
                 
                 VStack(spacing: Style.Dimensions.margin) {
                     // Bird name

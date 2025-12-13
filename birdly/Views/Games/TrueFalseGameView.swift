@@ -48,62 +48,62 @@ struct TrueFalseGameView: View {
     
     var body: some View {
         VStack(spacing: Style.Dimensions.largeMargin) {
-            // Question
-            Text("Is this a \(displayedBirdName)?")
-                .font(Style.Font.h2.weight(.semibold))
-                .multilineTextAlignment(.center)
-                .padding(.top, Style.Dimensions.largeMargin)
-                .padding(.horizontal, Style.Dimensions.margin)
-            
             // Bird image
             BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
-                .frame(maxHeight: 300)
-                .padding(Style.Dimensions.margin)
             
-            Spacer()
-            
-            // True/False buttons
-            HStack(spacing: Style.Dimensions.largeMargin) {
-                TrueFalseButton(
-                    label: "True",
-                    isSelected: selectedAnswer == true,
-                    isCorrect: showResult && wasCorrect && selectedAnswer == true,
-                    isWrong: showResult && !wasCorrect && selectedAnswer == true,
-                    isDisabled: showResult
-                ) {
-                    selectAnswer(true)
-                }
+            VStack(spacing: Style.Dimensions.largeMargin) {
+                // Question
+                Text("Is this a \(displayedBirdName)?")
+                    .font(Style.Font.h2.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                    .padding(.top, Style.Dimensions.largeMargin)
+                    .padding(.horizontal, Style.Dimensions.margin)
                 
-                TrueFalseButton(
-                    label: "False",
-                    isSelected: selectedAnswer == false,
-                    isCorrect: showResult && wasCorrect && selectedAnswer == false,
-                    isWrong: showResult && !wasCorrect && selectedAnswer == false,
-                    isDisabled: showResult
-                ) {
-                    selectAnswer(false)
-                }
-            }
-            .padding(.horizontal, Style.Dimensions.margin)
-            
-            // Result message
-            VStack(spacing: Style.Dimensions.smallMargin) {
-                Text(wasCorrect ? "Correct! ✓" : "Not quite.")
-                    .font(Style.Font.b2)
-                    .foregroundColor(wasCorrect ? .green : .red)
+                Spacer()
                 
-                // Show actual bird name when the statement is false (regardless of answer correctness)
-                if !isCorrectMatch {
-                    Text("This is a \(correctBird.name)")
+                // True/False buttons
+                HStack(spacing: Style.Dimensions.largeMargin) {
+                    TrueFalseButton(
+                        label: "True",
+                        isSelected: selectedAnswer == true,
+                        isCorrect: showResult && wasCorrect && selectedAnswer == true,
+                        isWrong: showResult && !wasCorrect && selectedAnswer == true,
+                        isDisabled: showResult
+                    ) {
+                        selectAnswer(true)
+                    }
+                    
+                    TrueFalseButton(
+                        label: "False",
+                        isSelected: selectedAnswer == false,
+                        isCorrect: showResult && wasCorrect && selectedAnswer == false,
+                        isWrong: showResult && !wasCorrect && selectedAnswer == false,
+                        isDisabled: showResult
+                    ) {
+                        selectAnswer(false)
+                    }
+                }
+                .padding(.horizontal, Style.Dimensions.margin)
+                
+                // Result message
+                VStack(spacing: Style.Dimensions.smallMargin) {
+                    Text(wasCorrect ? "Correct! ✓" : "Not quite.")
                         .font(Style.Font.b2)
-                        .foregroundColor(.primary)
+                        .foregroundColor(wasCorrect ? .green : .red)
+                    
+                    // Show actual bird name when the statement is false (regardless of answer correctness)
+                    if !isCorrectMatch {
+                        Text("This is a \(correctBird.name)")
+                            .font(Style.Font.b2)
+                            .foregroundColor(.primary)
+                    }
                 }
+                .padding(.top, Style.Dimensions.margin)
+                .transition(.opacity)
+                .opacity(showResult ? 1.0 : 0.0)
             }
-            .padding(.top, Style.Dimensions.margin)
-            .transition(.opacity)
-            .opacity(showResult ? 1.0 : 0.0)
+            .padding(Style.Dimensions.margin)
         }
-        .padding(Style.Dimensions.margin)
         .onAppear {
             setupGame()
         }
