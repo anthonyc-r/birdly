@@ -33,6 +33,7 @@ struct LetterSelectionGameView: View {
         VStack(spacing: Style.Dimensions.largeMargin) {
             // Bird image
             BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
+                .featherEffect()
             
             VStack(spacing: Style.Dimensions.largeMargin) {
                 // Question
@@ -116,6 +117,11 @@ struct LetterSelectionGameView: View {
                 .frame(height: 50) // Reserve space to prevent layout shifts
             }
             .padding(Style.Dimensions.margin)
+        }
+        .background {
+            BirdImageView(imageSource: birdImage.imageSource, contentMode: .fill)
+                .ignoresSafeArea()
+                .overlay(Material.thin)
         }
         .onAppear {
             setupGame()
@@ -238,54 +244,17 @@ struct LetterButton: View {
     
     var body: some View {
         Button(action: action) {
-            Text(String(letter))
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-                .foregroundColor(.primary)
-                .frame(width: 70, height: 70)
-                .background {
-                    ZStack {
-                        // Base glass background
-                        RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                            .fill(.ultraThinMaterial)
-                            .opacity(0.85)
-                        
-                        // Accent gradient overlay
-                        RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                            .fill(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color.accentColor.opacity(0.3),
-                                        Color.accentColor.opacity(0.15),
-                                        Color.accentColor.opacity(0.1)
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                    }
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: Style.Dimensions.cornerRadius)
-                        .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.accentColor.opacity(0.9),
-                                    Color.accentColor.opacity(0.5),
-                                    Color.accentColor.opacity(0.3)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 2
-                        )
-                }
-                .shadow(
-                    color: Color.accentColor.opacity(0.3),
-                    radius: 6,
-                    x: 0,
-                    y: 2
-                )
+            Text(letter.description)
+                .frame(width: 20, height: 20)
+                .font(Style.Font.h3)
+                .foregroundStyle(buttonColors.text)
+                .padding(Style.Dimensions.margin * 1.5)
         }
+        .glassEffect(.clear.interactive())
+    }
+    
+    private var buttonColors: (text: Color, background: Color) {
+        return (Color.primary, Color(.accent).opacity(0.25))
     }
 }
 
