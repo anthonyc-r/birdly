@@ -19,6 +19,7 @@ struct IntroductionGameView: View {
             VStack(spacing: Style.Dimensions.largeMargin) {
                 // Bird image
                 BirdImageView(imageSource: birdImage.imageSource, contentMode: .fit)
+                    .featherEffect()
                 
                 VStack(spacing: Style.Dimensions.margin) {
                     // Bird name
@@ -59,6 +60,11 @@ struct IntroductionGameView: View {
                 }
                 .padding(Style.Dimensions.margin)
             }
+        }
+        .background {
+            BirdImageView(imageSource: birdImage.imageSource, contentMode: .fill)
+                .ignoresSafeArea()
+                .overlay(Material.thin)
         }
     }
 }
