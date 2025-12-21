@@ -20,6 +20,13 @@ struct LearningView: View {
         session = topic.createSession()
     }
     
+    private var currentGameId: String {
+        guard let game = session.currentGameInfo else {
+            return "completed"
+        }
+        return "\(game.gameType)-\(game.bird.id)-\(game.birdImage.id)"
+    }
+    
     var body: some View {
         @Bindable var topic = topic
         ZStack {
@@ -67,6 +74,10 @@ struct LearningView: View {
                         .id("tf-\(game.bird.id)-\(game.birdImage.id)")
                     }
                 }
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing).combined(with: .opacity),
+                    removal: .move(edge: .leading).combined(with: .opacity)
+                ))
             } else {
                 // All cards completed
                 VStack(spacing: Style.Dimensions.largeMargin) {
@@ -81,8 +92,10 @@ struct LearningView: View {
                     .buttonStyle(Style.Button.primary)
                 }
                 .padding(Style.Dimensions.margin)
+                .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.4), value: currentGameId)
         .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
