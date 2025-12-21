@@ -215,14 +215,14 @@ struct WordSearchGameView: View {
     }
     
     private func loadWordSearch() async {
-        let result = await gridGenerator.generate(word: targetWord)
-        
-        // Update UI on main thread
-        await MainActor.run {
-            grid = result.grid
-            gridSize = result.gridSize
-            isGenerating = false
+        guard let result = await gridGenerator.generate(word: targetWord) else {
+            // If we can't create this game, just skip it
+            onComplete(bird.id, true)
+            return
         }
+        grid = result.grid
+        gridSize = result.gridSize
+        isGenerating = false
     }
     
     
