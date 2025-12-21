@@ -16,7 +16,7 @@ struct WordSearchGridGenerator {
         self.generationAttemptThreshold = generationAttemptThreshold
     }
     
-    func generate(word: String) async -> (grid: [[Character]], gridSize: Int) {
+    func generate(word: String) async -> WordSearchGrid? {
         let wordLength = word.count
         let maxGridSize = self.maxGridSize
         let generationAttemptThreshold = self.generationAttemptThreshold
@@ -25,17 +25,16 @@ struct WordSearchGridGenerator {
         return await Task.detached(priority: .userInitiated) {
             var currentGridSize = 4
             
-            var success = false
             var attempts = 0
             let maxTotalAttempts = 3 // Maximum times to increase grid size
             var generatedGrid: [[Character]] = []
             var finalGridSize = 4
             
-            while !success && attempts < maxTotalAttempts && currentGridSize <= maxGridSize {
+            while attempts < maxTotalAttempts && currentGridSize <= maxGridSize {
                 // Ensure word fits in current grid
                 if wordLength > currentGridSize * currentGridSize {
                     // Word is too long for this grid size, increase it
-                    currentGridSize = min(maxGridSize, currentGridSize + 2)
+                    currentGridSize = min(maxGridSize, currentGridSize + 1)
                     attempts += 1
                     continue
                 }
@@ -50,52 +49,30 @@ struct WordSearchGridGenerator {
                 }
                 
                 // Generate a random walk path through the grid
-                let wordPath = WordSearchPathGenerator.generateRandomWalkPath(
-                    wordLength: wordLength,
-                    gridSize: currentGridSize,
-                    maxAttempts: generationAttemptThreshold
-                )
-                
-                // Check if we got a complete path
-                if wordPath.count >= wordLength {
-                    // Place the word along the generated path
-                    for (index, position) in wordPath.enumerated() {
-                        if index < wordLength {
-                            let char = word[word.index(word.startIndex, offsetBy: index)]
-                            generatedGrid[position.row][position.col] = char
-                        }
-                    }
-                    finalGridSize = currentGridSize
-                    success = true
-                } else {
-                    // Path generation failed, try with larger grid
-                    currentGridSize = min(maxGridSize, currentGridSize + 2)
+                guard let wordPath = WordSearchPathGenerator.generateRandomWalkPath(wordLength: wordLength,gridSize: currentGridSize,maxAttempts: generationAttemptThreshold) else {
+                    currentGridSize = min(maxGridSize, currentGridSize + 1)
                     attempts += 1
+                    continue
                 }
-            }
-            
-            // If still failed after all attempts, use fallback path
-            if !success {
-                let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                generatedGrid = (0..<finalGridSize).map { _ in
-                    (0..<finalGridSize).map { _ in
-                        alphabet.randomElement() ?? "A"
-                    }
-                }
-                let fallbackPath = WordSearchPathGenerator.generateFallbackPath(
-                    wordLength: wordLength,
-                    gridSize: finalGridSize
-                )
-                for (index, position) in fallbackPath.enumerated() {
+                
+                // Place the word along the generated path
+                for (index, position) in wordPath.enumerated() {
                     if index < wordLength {
                         let char = word[word.index(word.startIndex, offsetBy: index)]
                         generatedGrid[position.row][position.col] = char
                     }
                 }
+                finalGridSize = currentGridSize
+                return WordSearchGrid(grid: generatedGrid, gridSize: finalGridSize)
             }
-            
-            return (generatedGrid, finalGridSize)
+            // Else we couldn't generate a grid in a reasonable time, don't show this game
+            return nil
         }.value
+    }
+    
+    struct WordSearchGrid {
+        let grid: [[Character]]
+        let gridSize: Int
     }
 }
 
