@@ -10,6 +10,7 @@ import SwiftUI
 struct LetterSelectionGameView: View {
     let bird: Bird
     let birdImage: BirdImage
+    let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
     @State private var currentPosition: Int = 0 // Current position in the word to fill
@@ -173,6 +174,10 @@ struct LetterSelectionGameView: View {
             // Check if word is complete
             if currentPosition >= nameLength {
                 gameWon = true
+                
+                // Notify LearningView that answer is revealed
+                onAnswerRevealed(true)
+                
                 withAnimation {
                     showResult = true
                 }
@@ -196,6 +201,10 @@ struct LetterSelectionGameView: View {
             if incorrectAttempts >= 3 {
                 // Game lost
                 gameLost = true
+                
+                // Notify LearningView that answer is revealed
+                onAnswerRevealed(false)
+                
                 withAnimation {
                     showResult = true
                 }
@@ -265,6 +274,7 @@ struct LetterButton: View {
     return LetterSelectionGameView(
         bird: bird,
         birdImage: bird.images.first!,
+        onAnswerRevealed: { _ in },
         onComplete: { _, _ in }
     )
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct WordSearchGameView: View {
     let bird: Bird
     let birdImage: BirdImage
+    let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
     @State private var grid: [[Character]] = []
@@ -277,6 +278,9 @@ struct WordSearchGameView: View {
             // Reset incorrect attempts on correct answer
             incorrectAttempts = 0
             
+            // Notify LearningView that answer is revealed
+            onAnswerRevealed(true)
+            
             withAnimation {
                 showResult = true
             }
@@ -295,6 +299,9 @@ struct WordSearchGameView: View {
             
             // If 3 incorrect attempts, mark as wrong and move on
             if incorrectAttempts >= 3 {
+                // Notify LearningView that answer is revealed
+                onAnswerRevealed(false)
+                
                 withAnimation {
                     showResult = true
                 }
@@ -350,6 +357,7 @@ fileprivate struct CellPositionKey: PreferenceKey {
     return WordSearchGameView(
         bird: bird,
         birdImage: bird.images.first!,
+        onAnswerRevealed: { _ in },
         onComplete: { _, _ in }
     )
 }

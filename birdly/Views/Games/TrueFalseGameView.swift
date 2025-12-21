@@ -12,6 +12,7 @@ struct TrueFalseGameView: View {
     let birdImage: BirdImage
     let introducedBirds: Set<UUID>
     let allBirds: [Bird]
+    let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
     @State private var displayedBirdName: String = ""
@@ -128,6 +129,9 @@ struct TrueFalseGameView: View {
         wasCorrect = (answer == isCorrectMatch)
         selectedAnswer = answer
         
+        // Notify LearningView that answer is revealed
+        onAnswerRevealed(wasCorrect)
+        
         withAnimation {
             showResult = true
         }
@@ -197,6 +201,7 @@ struct TrueFalseButton: View {
         birdImage: robin.images.first!,
         introducedBirds: Set([robin.id, blackbird.id]),
         allBirds: [robin, blackbird],
+        onAnswerRevealed: { _ in },
         onComplete: { _, _ in }
     )
 }

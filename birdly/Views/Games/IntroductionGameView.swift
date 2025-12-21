@@ -10,6 +10,7 @@ import SwiftUI
 struct IntroductionGameView: View {
     let bird: Bird
     let birdImage: BirdImage
+    let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
     @State private var showDetails = false
@@ -82,6 +83,7 @@ struct IntroductionGameView: View {
     return IntroductionGameView(
         bird: bird,
         birdImage: bird.images.first!,
+        onAnswerRevealed: { _ in },
         onComplete: { _, _ in }
     )
 }

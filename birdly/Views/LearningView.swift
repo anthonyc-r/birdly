@@ -37,6 +37,7 @@ struct LearningView: View {
                         IntroductionGameView(
                             bird: game.bird,
                             birdImage: game.birdImage,
+                            onAnswerRevealed: handleAnswerRevealed,
                             onComplete: handleCardComplete
                         )
                         .id("intro-\(game.bird.id)-\(game.birdImage.id)")
@@ -46,6 +47,7 @@ struct LearningView: View {
                             birdImage: game.birdImage,
                             introducedBirds: introducedBirds,
                             allBirds: topic.birds,
+                            onAnswerRevealed: handleAnswerRevealed,
                             onComplete: handleCardComplete
                         )
                         .id("mc-\(game.bird.id)-\(game.birdImage.id)")
@@ -53,6 +55,7 @@ struct LearningView: View {
                         WordSearchGameView(
                             bird: game.bird,
                             birdImage: game.birdImage,
+                            onAnswerRevealed: handleAnswerRevealed,
                             onComplete: handleCardComplete
                         )
                         .id("ws-\(game.bird.id)-\(game.birdImage.id)")
@@ -60,6 +63,7 @@ struct LearningView: View {
                         LetterSelectionGameView(
                             bird: game.bird,
                             birdImage: game.birdImage,
+                            onAnswerRevealed: handleAnswerRevealed,
                             onComplete: handleCardComplete
                         )
                         .id("ls-\(game.bird.id)-\(game.birdImage.id)")
@@ -69,6 +73,7 @@ struct LearningView: View {
                             birdImage: game.birdImage,
                             introducedBirds: introducedBirds,
                             allBirds: topic.birds,
+                            onAnswerRevealed: handleAnswerRevealed,
                             onComplete: handleCardComplete
                         )
                         .id("tf-\(game.bird.id)-\(game.birdImage.id)")
@@ -130,6 +135,15 @@ struct LearningView: View {
     
     private var introducedBirds: Set<UUID> {
         return Set(topic.birds.filter { $0.isIntroduced }.map { $0.id })
+    }
+    
+    private func handleAnswerRevealed(wasCorrect: Bool) {
+        // Provide haptic and sound feedback when answer is revealed
+        if wasCorrect {
+            FeedbackManager.shared.playCorrectFeedback()
+        } else {
+            FeedbackManager.shared.playIncorrectFeedback()
+        }
     }
     
     private func handleCardComplete(birdId: UUID, wasCorrect: Bool) {
