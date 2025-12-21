@@ -17,7 +17,7 @@ struct WordSearchCellView: View {
     
     var body: some View {
         Text(String(character))
-            .font(.system(size: 22, weight: .semibold, design: .rounded))
+            .font(.system(size: 35, weight: .semibold, design: .rounded))
             .frame(width: cellSize, height: cellSize)
             .background {
                 ZStack {

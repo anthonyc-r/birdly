@@ -32,7 +32,7 @@ struct WordSearchGameView: View {
     private var cellSize: CGFloat {
         // Scale down cell size as grid gets larger to keep UI reasonable
         if gridSize <= 5 {
-            return 50
+            return 70
         } else if gridSize <= 7 {
             return 42
         } else {
