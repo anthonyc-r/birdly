@@ -270,6 +270,16 @@ struct WordSearchGameView: View {
         // Don't check if we've already reached 3 attempts
         guard incorrectAttempts < 3 else { return }
         
+        // If only a single letter is selected, just clear the selection without counting as a mistake
+        if selectedPath.count == 1 {
+            withAnimation {
+                selectedCells = []
+                selectedPath = []
+                startPosition = nil
+            }
+            return
+        }
+        
         foundWord = WordSearchGameLogic.checkWord(
             selectedPath: selectedPath,
             grid: grid,
