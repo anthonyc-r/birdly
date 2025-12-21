@@ -46,6 +46,7 @@ struct IntroductionGameView: View {
                     
                     // Continue button
                     Button(action: {
+                        FeedbackManager.shared.playSelectionFeedback()
                         if !showDetails {
                             withAnimation {
                                 showDetails = true

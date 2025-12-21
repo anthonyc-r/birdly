@@ -236,6 +236,7 @@ struct WordSearchGameView: View {
         
         if startPosition == nil {
             // Start new selection
+            FeedbackManager.shared.playSelectionFeedback()
             startPosition = position
             selectedPath = [position]
             selectedCells = [position]
@@ -249,6 +250,7 @@ struct WordSearchGameView: View {
                         selectedCells = Set(selectedPath)
                     } else {
                         // Add new adjacent cell to path
+                        FeedbackManager.shared.playSelectionFeedback()
                         selectedPath.append(position)
                         selectedCells.insert(position)
                     }

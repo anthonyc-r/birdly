@@ -60,6 +60,7 @@ struct MultipleChoiceGameView: View {
                             isDisabled: showResult
                         ) {
                             if !showResult {
+                                FeedbackManager.shared.playSelectionFeedback()
                                 selectedAnswer = bird.id
                                 wasCorrect = bird.id == correctBird.id
                                 

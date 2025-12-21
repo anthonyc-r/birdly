@@ -72,6 +72,7 @@ struct TrueFalseGameView: View {
                         isWrong: showResult && !wasCorrect && selectedAnswer == true,
                         isDisabled: showResult
                     ) {
+                        FeedbackManager.shared.playSelectionFeedback()
                         selectAnswer(true)
                     }
                     Spacer()
@@ -82,6 +83,7 @@ struct TrueFalseGameView: View {
                         isWrong: showResult && !wasCorrect && selectedAnswer == false,
                         isDisabled: showResult
                     ) {
+                        FeedbackManager.shared.playSelectionFeedback()
                         selectAnswer(false)
                     }
                 }

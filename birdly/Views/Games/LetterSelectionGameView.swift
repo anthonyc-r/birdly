@@ -78,6 +78,7 @@ struct LetterSelectionGameView: View {
                                 letter: currentOptions[index],
                                 isCorrect: currentOptions[index] == getCorrectLetter(),
                                 action: {
+                                    FeedbackManager.shared.playSelectionFeedback()
                                     selectLetter(currentOptions[index])
                                 }
                             )
