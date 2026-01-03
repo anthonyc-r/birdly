@@ -283,7 +283,6 @@ enum DataLoader {
                 
                 // Ensure bird is linked to this topic (both directions)
                 if !existingBirdsInTopicIds.contains(birdData.id) {
-                    bird.topic = topic
                     // Also explicitly add to topic's birds array to ensure relationship
                     if !topic.birds.contains(where: { $0.id == bird.id }) {
                         topic.birds.append(bird)

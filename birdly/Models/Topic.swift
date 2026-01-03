@@ -10,6 +10,8 @@ import SwiftData
 
 @Model
 final class Topic {
+    static let dojoId = UUID(uuidString: "B1119204-075D-4694-840F-11AB7B5A3C0C")!
+    
     @Attribute(.unique) var id: UUID
     var title: String
     var subtitle: String
