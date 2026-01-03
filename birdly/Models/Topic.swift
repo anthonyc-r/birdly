@@ -15,6 +15,8 @@ final class Topic {
     @Attribute(.unique) var id: UUID
     var title: String
     var subtitle: String
+    @Relationship(deleteRule: .nullify, inverse: \Bird.topics) var birds: [Bird] = []
+
     
     // Computed property: average progress of all birds in this topic (0.0 to 1.0)
     var progress: Double {
@@ -38,18 +40,18 @@ final class Topic {
             imageSourceData = try? JSONEncoder().encode(newValue)
         }
     }
-    
-    @Relationship(deleteRule: .cascade) var birds: [Bird] = []
-    
+        
     init(id: UUID, title: String, subtitle: String, imageSource: ImageSource, birds: [Bird] = []) {
         self.id = id
         self.title = title
         self.subtitle = subtitle
         self.imageSource = imageSource
         self.birds = birds
-        // Set reverse relationship
+        // Set reverse relationship for many-to-many
         for bird in birds {
-            bird.topic = self
+            if !bird.topics.contains(where: { $0.id == self.id }) {
+                bird.topics.append(self)
+            }
         }
     }
     

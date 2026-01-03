@@ -67,7 +67,12 @@ final class Bird {
         return total / Double(images.count)
     }
     
-    var topic: Topic?
+    var topics: [Topic] = []
+    
+    // Backward compatibility: returns first topic (if any)
+    var topic: Topic? {
+        return topics.first
+    }
     
     init(id: UUID, name: String, scientificName: String, description: String, images: [BirdImage] = [], isIdentified: Bool = false) {
         self.id = id

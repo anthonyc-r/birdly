@@ -20,6 +20,36 @@ struct birdlyApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [Topic.self, Bird.self, BirdImage.self, User.self])
+        .modelContainer(createModelContainer())
+    }
+    
+    private func createModelContainer() -> ModelContainer {
+        // Use a new database URL to avoid schema conflicts with the old one-to-many relationship
+        // This creates a fresh database with the new many-to-many schema
+        let schema = Schema([
+            Topic.self,
+            Bird.self,
+            BirdImage.self,
+            User.self
+        ])
+        
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            url: getDatabaseURL(),
+            allowsSave: true
+        )
+        
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }
+    
+    private func getDatabaseURL() -> URL {
+        // Use a new database name to avoid conflicts with the old schema
+        // Version 2 database (many-to-many relationship)
+        let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        return url.appendingPathComponent("default_v2.store")
     }
 }

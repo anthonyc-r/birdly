@@ -33,20 +33,21 @@ struct BirdLogView: View {
     
     // Group filtered birds by topic
     private var birdsByTopic: [(Topic, [Bird])] {
-        // Group birds by their topic (handles optional topics correctly)
-        let grouped = Dictionary(grouping: filteredBirds) { bird in
-            bird.topic
+        // Since birds can belong to multiple topics, we need to create pairs
+        var result: [(Topic, [Bird])] = []
+        
+        for topic in allTopics.filter({ $0.id != Topic.dojoId }) {
+            let birdsInTopic = filteredBirds.filter { bird in
+                bird.topics.contains(where: { $0.id == topic.id })
+            }
+            if !birdsInTopic.isEmpty {
+                let sortedBirds = birdsInTopic.sorted { $0.name < $1.name }
+                result.append((topic, sortedBirds))
+            }
         }
         
-        // Sort by topic title, and birds within each topic by name
-        // Only include topics that have seen birds
-        return allTopics.compactMap { topic -> (Topic, [Bird])? in
-            // Dictionary grouping with optional keys creates Optional<Topic>? keys
-            // So we access using Optional.some(topic)
-            guard let birds = grouped[Optional.some(topic)], !birds.isEmpty else { return nil }
-            let sortedBirds = birds.sorted { $0.name < $1.name }
-            return (topic, sortedBirds)
-        }
+        // Sort by topic title
+        return result.sorted { $0.0.title < $1.0.title }
     }
     
     var body: some View {

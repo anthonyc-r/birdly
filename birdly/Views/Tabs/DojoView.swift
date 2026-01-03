@@ -9,26 +9,21 @@ import SwiftUI
 import SwiftData
 
 struct DojoView: View {
-    @Query(sort: \Topic.title) private var topics: [Topic]
     @State private var currentImageIndex = 0
     @State private var isVisible = false
     @State private var transitionTask: Task<Void, Never>?
-    @State private var dojoTopic: Topic?
+    
     @Environment(\.modelContext) private var modelContext
     
-    private var allBirds: [Bird] {
+    @Query(sort: \Topic.title) private var topics: [Topic]
+    
+    private var dojoTopic: Topic? {
+        topics.first { $0.id == Topic.dojoId }
+    }
+    
+    private var allBirds: Set<Bird> {
         // Get all unique birds from all topics
-        let birds = Query(sort: \Bird.name, order: .forward).wrappedValue
-        // Remove duplicates by ID (in case a bird appears in multiple topics)
-        var seenIds = Set<UUID>()
-        return birds.filter { bird in
-            if seenIds.contains(bird.id) {
-                return false
-            } else {
-                seenIds.insert(bird.id)
-                return true
-            }
-        }
+        return Set(topics.flatMap { $0.birds }.filter { $0.isIntroduced })
     }
     
     private var allBirdImages: [BirdImage] {
@@ -108,10 +103,7 @@ struct DojoView: View {
         .onAppear {
             isVisible = true
             startImageTransition()
-            createDojoTopic()
-        }
-        .onChange(of: topics) { _, _ in
-            createDojoTopic()
+            updateDojoTopic()
         }
         .onDisappear {
             isVisible = false
@@ -120,27 +112,25 @@ struct DojoView: View {
         }
     }
     
-    private func createDojoTopic() {
+    private func updateDojoTopic() {
         let birds = allBirds
         guard !birds.isEmpty else {
-            dojoTopic = nil
             return
         }
         
-        // Create a temporary topic with all birds for the Dojo session
-        // Note: This topic is not persisted (not inserted into modelContext)
-        // The Topic initializer will temporarily modify birds' topic relationships,
-        // but since this topic is never saved, those changes won't persist
-        
-        let topic = Topic(
-            id: Topic.dojoId,
-            title: "Dojo",
-            subtitle: "Practice with all known birds",
-            imageSource: .asset(name: "bird"),
-            birds: birds
-        )
-        
-        dojoTopic = topic
+        if let topic = (try? modelContext.fetch(FetchDescriptor<Topic>()))?.filter({ $0.id == Topic.dojoId }).first {
+            topic.birds = Array(birds)
+        } else {
+            let topic = Topic(
+                id: Topic.dojoId,
+                title: "Dojo",
+                subtitle: "Practice with all known birds",
+                imageSource: .asset(name: "bird"),
+                birds: Array(birds)
+            )
+            modelContext.insert(topic)
+        }
+        try? modelContext.save()
     }
     
     private func startImageTransition() {

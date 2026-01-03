@@ -25,6 +25,6 @@ final class NavigationModel {
     enum Tab {
         case discover
         case birdLog
-        case settings
+        case dojo
     }
 }

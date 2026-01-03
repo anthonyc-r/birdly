@@ -19,10 +19,11 @@ struct DiscoverView: View {
     ]
     
     private var filteredTopics: [Topic] {
+        let validTopics = topics.filter { $0.id != Topic.dojoId }
         if searchText.isEmpty {
-            return topics
+            return validTopics
         }
-        return topics.filter { topic in
+        return validTopics.filter { topic in
             topic.title.localizedCaseInsensitiveContains(searchText) ||
             topic.subtitle.localizedCaseInsensitiveContains(searchText)
         }

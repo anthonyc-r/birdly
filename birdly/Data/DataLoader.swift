@@ -281,11 +281,14 @@ enum DataLoader {
                 bird.birdDescription = birdData.description
                 // Preserve isIdentified state (don't overwrite user progress)
                 
-                // Ensure bird is linked to this topic (both directions)
+                // Ensure bird is linked to this topic (many-to-many relationship)
                 if !existingBirdsInTopicIds.contains(birdData.id) {
-                    // Also explicitly add to topic's birds array to ensure relationship
                     if !topic.birds.contains(where: { $0.id == bird.id }) {
                         topic.birds.append(bird)
+                    }
+                    // Also add this topic to the bird's topics array
+                    if !bird.topics.contains(where: { $0.id == topic.id }) {
+                        bird.topics.append(topic)
                     }
                 }
             } else {
@@ -298,9 +301,13 @@ enum DataLoader {
                     images: [],
                     isIdentified: birdData.isIdentified ?? false
                 )
-                // Set relationship both ways
-                bird.topic = topic
-                topic.birds.append(bird)
+                // Set relationship both ways (many-to-many)
+                if !topic.birds.contains(where: { $0.id == bird.id }) {
+                    topic.birds.append(bird)
+                }
+                if !bird.topics.contains(where: { $0.id == topic.id }) {
+                    bird.topics.append(topic)
+                }
                 context.insert(bird)
             }
             
