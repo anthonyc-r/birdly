@@ -47,15 +47,14 @@ enum DataLoader {
     /// Finds all topic JSON files in the bundle (files with .topic.json extension)
     private static func findTopicFiles() -> [URL] {
         guard let bundlePath = Bundle.main.resourcePath else { return [] }
-        let dataPath = (bundlePath as NSString).appendingPathComponent("Data")
         
-        guard let files = try? FileManager.default.contentsOfDirectory(atPath: dataPath) else { return [] }
+        guard let files = try? FileManager.default.contentsOfDirectory(atPath: bundlePath) else { return [] }
         
         return files
             .filter { $0.hasSuffix(".topic.json") }
             .compactMap { fileName in
                 let baseName = fileName.replacingOccurrences(of: ".topic.json", with: "")
-                return Bundle.main.url(forResource: baseName, withExtension: "topic.json", subdirectory: "Data")
+                return Bundle.main.url(forResource: baseName, withExtension: "topic.json")
             }
     }
     

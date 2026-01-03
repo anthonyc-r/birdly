@@ -16,6 +16,8 @@ final class Topic {
     var title: String
     var subtitle: String
     @Relationship(deleteRule: .nullify, inverse: \Bird.topics) var birds: [Bird] = []
+    
+    @Transient var currentSession: TopicSession?
 
     
     // Computed property: average progress of all birds in this topic (0.0 to 1.0)
@@ -58,6 +60,10 @@ final class Topic {
     /// Creates a new TopicSession for this topic
     @MainActor
     func createSession() -> TopicSession {
-        return TopicSession(topic: self)
+        let session = currentSession ?? TopicSession(topic: self)
+        if currentSession == nil {
+            currentSession = session
+        }
+        return session
     }
 }

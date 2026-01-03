@@ -1,0 +1,251 @@
+{
+  "_comment": "Image formats: Use 'imageName' (string) for asset catalog images (backward compatible), or 'imageSource' (object) with 'type': 'asset'/'url' and 'value' for flexible image sources. Each bird now has 3 images: perched, flight_side, and flight_underbelly.",
+  "id": "00000000-0000-0000-0000-000000000003",
+  "title": "Summer Birds",
+  "subtitle": "Discover the birds that visit during the warmer months",
+  "progress": 0.0,
+  "imageName": "Summer Birds",
+  "birds": [
+    {
+      "id": "00000000-0000-0000-0000-000000000121",
+      "name": "Chiffchaff",
+      "scientificName": "Phylloscopus collybita",
+      "description": "Small warbler with olive-green upperparts and pale underparts. Named after its distinctive 'chiff-chaff' song. Often seen in trees and shrubs.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000261",
+          "variant": "perched",
+          "imageName": "Chiffchaff Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000262",
+          "variant": "flight_side",
+          "imageName": "Chiffchaff Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000263",
+          "variant": "flight_underbelly",
+          "imageName": "Chiffchaff Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000122",
+      "name": "Cuckoo",
+      "scientificName": "Cuculus canorus",
+      "description": "Grey bird with long tail and pointed wings. Famous for laying eggs in other birds' nests. Distinctive 'cuck-oo' call.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000264",
+          "variant": "perched",
+          "imageName": "Cuckoo Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000265",
+          "variant": "flight_side",
+          "imageName": "Cuckoo Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000266",
+          "variant": "flight_underbelly",
+          "imageName": "Cuckoo Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000123",
+      "name": "Garden Warbler",
+      "scientificName": "Sylvia borin",
+      "description": "Plain brown warbler with no distinctive markings. Beautiful melodic song. Often found in gardens and woodland edges.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000267",
+          "variant": "perched",
+          "imageName": "Garden Warbler Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000268",
+          "variant": "flight_side",
+          "imageName": "Garden Warbler Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000269",
+          "variant": "flight_underbelly",
+          "imageName": "Garden Warbler Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000124",
+      "name": "Hobby",
+      "scientificName": "Falco subbuteo",
+      "description": "Small, elegant falcon with long, pointed wings. Fast and agile, often seen catching dragonflies and small birds in flight.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000270",
+          "variant": "perched",
+          "imageName": "Hobby Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000271",
+          "variant": "flight_side",
+          "imageName": "Hobby Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000272",
+          "variant": "flight_underbelly",
+          "imageName": "Hobby Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000125",
+      "name": "House Martin",
+      "scientificName": "Delichon urbicum",
+      "description": "Small black and white bird with forked tail. Builds mud nests under eaves. Often seen in small flocks, catching insects in flight.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000273",
+          "variant": "perched",
+          "imageName": "House Martin Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000274",
+          "variant": "flight_side",
+          "imageName": "House Martin Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000275",
+          "variant": "flight_underbelly",
+          "imageName": "House Martin Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000126",
+      "name": "Spotted Flycatcher",
+      "scientificName": "Muscicapa striata",
+      "description": "Brown-grey bird with streaked breast and crown. Perches on branches and sallies out to catch flying insects. Late summer migrant.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000276",
+          "variant": "perched",
+          "imageName": "Spotted Flycatcher Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000277",
+          "variant": "flight_side",
+          "imageName": "Spotted Flycatcher Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000278",
+          "variant": "flight_underbelly",
+          "imageName": "Spotted Flycatcher Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000127",
+      "name": "Swallow",
+      "scientificName": "Hirundo rustica",
+      "description": "Long-tailed bird with dark blue upperparts, red throat, and pale underparts. Builds mud nests in barns and sheds. Summer migrant.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000279",
+          "variant": "perched",
+          "imageName": "Swallow Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000280",
+          "variant": "flight_side",
+          "imageName": "Swallow Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000281",
+          "variant": "flight_underbelly",
+          "imageName": "Swallow Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000128",
+      "name": "Swift",
+      "scientificName": "Apus apus",
+      "description": "Dark brown bird with long, scythe-like wings. Spends almost its entire life in flight. Returns to UK in late spring, leaves in early autumn.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000282",
+          "variant": "perched",
+          "imageName": "Swift Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000283",
+          "variant": "flight_side",
+          "imageName": "Swift Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000284",
+          "variant": "flight_underbelly",
+          "imageName": "Swift Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000129",
+      "name": "Whitethroat",
+      "scientificName": "Sylvia communis",
+      "description": "Brown warbler with white throat and grey head. Males have a distinctive scratchy song. Often seen in scrub and hedgerows.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000285",
+          "variant": "perched",
+          "imageName": "Whitethroat Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000286",
+          "variant": "flight_side",
+          "imageName": "Whitethroat Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000287",
+          "variant": "flight_underbelly",
+          "imageName": "Whitethroat Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000130",
+      "name": "Willow Warbler",
+      "scientificName": "Phylloscopus trochilus",
+      "description": "Small warbler with olive-green upperparts and pale yellow underparts. Very similar to Chiffchaff but with longer wings and a sweeter song.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000288",
+          "variant": "perched",
+          "imageName": "Willow Warbler Perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000289",
+          "variant": "flight_side",
+          "imageName": "Willow Warbler Flight Side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000290",
+          "variant": "flight_underbelly",
+          "imageName": "Willow Warbler Flight Underbelly"
+        }
+      ],
+      "isIdentified": false
+    }
+  ]
+}
+

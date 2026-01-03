@@ -23,6 +23,7 @@ class TopicSession: ObservableObject {
     /// Moves to the next game in the session
     func advance() {
         currentGameInfo = calculateNextGame()
+        print("Advanced to game: \(currentGameInfo?.gameType) - bird \(currentGameInfo?.bird.name)")
     }
     
     /// Dynamically calculates the next game based on current topic state

@@ -13,7 +13,6 @@ final class NavigationModel {
     
     var hasSeenSplash = false
     var activeTab: Tab = .discover
-    var navigationStack = [Tab : [Any]]()
     
     var path = NavigationPath()
     
