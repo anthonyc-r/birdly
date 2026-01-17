@@ -30,7 +30,8 @@ struct birdlyApp: App {
             Topic.self,
             Bird.self,
             BirdImage.self,
-            User.self
+            User.self,
+            Settings.self
         ])
         
         let modelConfiguration = ModelConfiguration(

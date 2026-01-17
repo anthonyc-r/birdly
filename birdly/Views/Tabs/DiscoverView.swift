@@ -11,6 +11,7 @@ import SwiftData
 struct DiscoverView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Query(sort: \Topic.title) private var topics: [Topic]
+    @SingleValueDefaultQuery(defaultValue: Settings.getDefaultSettings()) private var userSettings: Settings
     @State private var searchText = ""
     
     private let columns = [
@@ -86,8 +87,16 @@ struct DiscoverView: View {
             .navigationDestination(for: Topic.self) { topic in
                 LearningView(topic: topic)
             }
+            .navigationDestination(for: Settings.self) { settings in
+                SettingsView(settings: settings)
+            }
             .navigationTitle("Bird Categories")
             .searchable(text: $searchText, prompt: "Search topics")
+            .toolbar(content: {
+                NavigationLink(value: userSettings, label: {
+                    Image(systemName: "gearshape.fill")
+                })
+            })
         }
     }
 }
