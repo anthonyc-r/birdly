@@ -76,9 +76,10 @@ struct LearningView: View {
                             onAnswerRevealed: handleAnswerRevealed,
                             onComplete: handleCardComplete
                         )
-                        .id("tf-\(game.bird.id)-\(game.birdImage.id)")
+                        
                     }
                 }
+                .id("tf-\(game.hashValue)")
                 .transition(.asymmetric(
                     insertion: .move(edge: .trailing).combined(with: .opacity),
                     removal: .move(edge: .leading).combined(with: .opacity)

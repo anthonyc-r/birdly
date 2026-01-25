@@ -13,7 +13,7 @@ import SwiftData
 /// Manages the sequence of games to be played
 class TopicSession: ObservableObject {
     private let topic: Topic
-    @Published var currentGameInfo: (bird: Bird, birdImage: BirdImage, gameType: GameType)?
+    @Published var currentGameInfo: Game?
     
     init(topic: Topic) {
         self.topic = topic
@@ -21,6 +21,7 @@ class TopicSession: ObservableObject {
     }
     
     /// Moves to the next game in the session
+    @MainActor
     func advance() {
         currentGameInfo = calculateNextGame()
         print("Advanced to game: \(currentGameInfo?.gameType) - bird \(currentGameInfo?.bird.name)")
@@ -28,7 +29,7 @@ class TopicSession: ObservableObject {
     
     /// Dynamically calculates the next game based on current topic state
     /// Handles bird selection, game type selection, and image variant selection
-    private func calculateNextGame() -> (bird: Bird, birdImage: BirdImage, gameType: GameType)? {
+    private func calculateNextGame() -> Game? {
         let topicProgress = topic.progress // 0.0 to 1.0
         
         // Separate birds into categories
@@ -62,7 +63,7 @@ class TopicSession: ObservableObject {
             return nil
         }
         
-        return (bird: bird, birdImage: image, gameType: gameType)
+        return Game(bird: bird, birdImage: image, gameType: gameType)
     }
     
     /// Determines whether a new bird should be introduced
