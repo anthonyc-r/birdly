@@ -17,12 +17,8 @@ struct SettingsView: View {
                 Toggle(isOn: $settings.isHapticsEnabled, label: { Text("Haptic feedback")})
             }
             Section(header: Text("About")) {
-                NavigationLink("Open source license") {
-                    
-                }
-                NavigationLink("Get the source code") {
-                    
-                }
+                Link("Open source license", destination: Urls.license)
+                Link("Get the source code", destination: Urls.sourceCode)
             }
         }
         .navigationTitle("Settings")
