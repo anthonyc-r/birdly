@@ -12,6 +12,7 @@ struct LearningView: View {
     let topic: Topic
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.feedbackManager) private var feedbackManager
     
     @ObservedObject private var session: TopicSession
     
@@ -141,9 +142,9 @@ struct LearningView: View {
     private func handleAnswerRevealed(wasCorrect: Bool) {
         // Provide haptic and sound feedback when answer is revealed
         if wasCorrect {
-            FeedbackManager.shared.playCorrectFeedback()
+            feedbackManager?.playCorrectFeedback()
         } else {
-            FeedbackManager.shared.playIncorrectFeedback()
+            feedbackManager?.playIncorrectFeedback()
         }
     }
     

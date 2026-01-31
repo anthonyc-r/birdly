@@ -10,8 +10,8 @@ import SwiftData
 
 struct DiscoverView: View {
     @Environment(NavigationModel.self) private var navigationModel
+    @Environment(\.userSettings) private var userSettings
     @Query(sort: \Topic.title) private var topics: [Topic]
-    @SingleValueDefaultQuery(defaultValue: Settings.getDefaultSettings()) private var userSettings: Settings
     @State private var searchText = ""
     
     private let columns = [

@@ -10,9 +10,6 @@ import AVFoundation
 import CoreHaptics
 
 class FeedbackManager {
-    // Singleton instance
-    static let shared = FeedbackManager()
-    
     // Retain audio players to prevent deallocation before playback completes
     private var correctPlayer: AVAudioPlayer?
     private var incorrectPlayer: AVAudioPlayer?
@@ -23,16 +20,40 @@ class FeedbackManager {
     // CHHapticEngine for advanced haptic patterns
     private var hapticEngine: CHHapticEngine?
     
+    private let settings: Settings
+    
     // Private initializer to enforce singleton pattern
-    private init() {
+    init(_ settings: Settings) {
+        self.settings = settings
         // Initialize haptic generator for simple selection feedback
         selectionGenerator = UIImpactFeedbackGenerator(style: .light)
         selectionGenerator.prepare()
-        
-        // Initialize CHHapticEngine for advanced haptic patterns
         initializeHapticEngine()
-        
         preloadAudioFiles()
+
+    }
+ 
+    
+    /// Provides haptic and sound feedback for correct answers
+    /// Uses a strong rising pattern: medium → heavy → success notification (~1s total)
+    func playCorrectFeedback() {
+        if settings.isHapticsEnabled {
+            createCorrectHapticPattern()
+        }
+        if settings.isSoundEnabled {
+            playSound(player: &correctPlayer)
+        }
+    }
+    
+    /// Provides haptic and sound feedback for incorrect answers
+    /// Uses a strong descending pattern: heavy → medium → light → error notification (~1s total)
+    func playIncorrectFeedback() {
+        if settings.isHapticsEnabled {
+            createIncorrectHapticPattern()
+        }
+        if settings.isSoundEnabled {
+            playSound(player: &incorrectPlayer)
+        }
     }
     
     /// Initializes the CHHapticEngine for advanced haptic patterns
@@ -101,16 +122,6 @@ class FeedbackManager {
         }
     }
     
-    /// Provides haptic and sound feedback for correct answers
-    /// Uses a strong rising pattern: medium → heavy → success notification (~1s total)
-    func playCorrectFeedback() {
-        // Create haptic pattern for correct feedback (rising pattern)
-        createCorrectHapticPattern()
-        
-        // Sound feedback - play preloaded MP3 file
-        playSound(player: &correctPlayer)
-    }
-    
     /// Creates and plays the correct answer haptic pattern using CHHapticPattern
     private func createCorrectHapticPattern() {
         guard let engine = hapticEngine else {
@@ -169,16 +180,6 @@ class FeedbackManager {
             generator.prepare()
             generator.notificationOccurred(.success)
         }
-    }
-    
-    /// Provides haptic and sound feedback for incorrect answers
-    /// Uses a strong descending pattern: heavy → medium → light → error notification (~1s total)
-    func playIncorrectFeedback() {
-        // Create haptic pattern for incorrect feedback (descending pattern)
-        createIncorrectHapticPattern()
-        
-        // Sound feedback - play preloaded MP3 file
-        playSound(player: &incorrectPlayer)
     }
     
     /// Creates and plays the incorrect answer haptic pattern using CHHapticPattern

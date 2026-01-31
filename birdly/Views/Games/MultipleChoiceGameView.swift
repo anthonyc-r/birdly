@@ -15,6 +15,8 @@ struct MultipleChoiceGameView: View {
     let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
+    @Environment(\.feedbackManager) private var feedbackManager
+    
     @State private var selectedAnswer: UUID?
     @State private var showResult = false
     @State private var wasCorrect = false
@@ -60,7 +62,7 @@ struct MultipleChoiceGameView: View {
                             isDisabled: showResult
                         ) {
                             if !showResult {
-                                FeedbackManager.shared.playSelectionFeedback()
+                                feedbackManager?.playSelectionFeedback()
                                 selectedAnswer = bird.id
                                 wasCorrect = bird.id == correctBird.id
                                 

@@ -14,6 +14,7 @@ struct DojoView: View {
     @State private var transitionTask: Task<Void, Never>?
     
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.feedbackManager) private var feedbackManager
     
     @Query(sort: \Topic.title) private var topics: [Topic]
     
@@ -66,7 +67,7 @@ struct DojoView: View {
                     .padding(.horizontal, Style.Dimensions.largeMargin)
                 } else {
                     Button(action: {
-                        FeedbackManager.shared.playSelectionFeedback()
+                        feedbackManager?.playSelectionFeedback()
                     }) {
                         Text("Start")
                             .font(Style.Font.b2.weight(.semibold))

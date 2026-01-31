@@ -15,6 +15,8 @@ struct TrueFalseGameView: View {
     let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
+    @Environment(\.feedbackManager) private var feedbackManager
+    
     @State private var displayedBirdName: String = ""
     @State private var isCorrectMatch: Bool = true // Whether the displayed name matches the image
     @State private var selectedAnswer: Bool?
@@ -72,7 +74,7 @@ struct TrueFalseGameView: View {
                         isWrong: showResult && !wasCorrect && selectedAnswer == true,
                         isDisabled: showResult
                     ) {
-                        FeedbackManager.shared.playSelectionFeedback()
+                        feedbackManager?.playSelectionFeedback()
                         selectAnswer(true)
                     }
                     Spacer()
@@ -83,7 +85,7 @@ struct TrueFalseGameView: View {
                         isWrong: showResult && !wasCorrect && selectedAnswer == false,
                         isDisabled: showResult
                     ) {
-                        FeedbackManager.shared.playSelectionFeedback()
+                        feedbackManager?.playSelectionFeedback()
                         selectAnswer(false)
                     }
                 }

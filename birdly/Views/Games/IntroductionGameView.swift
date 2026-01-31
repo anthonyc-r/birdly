@@ -13,6 +13,8 @@ struct IntroductionGameView: View {
     let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
+    @Environment(\.feedbackManager) private var feedbackManager
+    
     @State private var showDetails = false
     
     var body: some View {
@@ -46,7 +48,7 @@ struct IntroductionGameView: View {
                     
                     // Continue button
                     Button(action: {
-                        FeedbackManager.shared.playSelectionFeedback()
+                        feedbackManager?.playSelectionFeedback()
                         if !showDetails {
                             withAnimation {
                                 showDetails = true

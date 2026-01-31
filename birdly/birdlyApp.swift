@@ -12,8 +12,7 @@ import SwiftData
 @main
 struct birdlyApp: App {
     init() {
-        // Preload audio files by initializing the FeedbackManager singleton
-        _ = FeedbackManager.shared
+        
     }
     
     var body: some Scene {

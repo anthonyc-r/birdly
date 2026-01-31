@@ -13,6 +13,8 @@ struct WordSearchGameView: View {
     let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
+    @Environment(\.feedbackManager) private var feedbackManager
+    
     @State private var grid: [[Character]] = []
     @State private var selectedCells: Set<GridPosition> = []
     @State private var selectedPath: [GridPosition] = [] // Track the order of selection
@@ -236,7 +238,7 @@ struct WordSearchGameView: View {
         
         if startPosition == nil {
             // Start new selection
-            FeedbackManager.shared.playSelectionFeedback()
+            feedbackManager?.playSelectionFeedback()
             startPosition = position
             selectedPath = [position]
             selectedCells = [position]
@@ -250,7 +252,7 @@ struct WordSearchGameView: View {
                         selectedCells = Set(selectedPath)
                     } else {
                         // Add new adjacent cell to path
-                        FeedbackManager.shared.playSelectionFeedback()
+                        feedbackManager?.playSelectionFeedback()
                         selectedPath.append(position)
                         selectedCells.insert(position)
                     }

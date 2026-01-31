@@ -13,6 +13,8 @@ struct LetterSelectionGameView: View {
     let onAnswerRevealed: (Bool) -> Void
     let onComplete: (UUID, Bool) -> Void
     
+    @Environment(\.feedbackManager) private var feedbackManager
+    
     @State private var currentPosition: Int = 0 // Current position in the word to fill
     @State private var filledLetters: [Character?] = [] // Array of filled letters (nil for unfilled)
     @State private var currentOptions: [Character] = [] // 4 letter options for current position
@@ -78,7 +80,7 @@ struct LetterSelectionGameView: View {
                                 letter: currentOptions[index],
                                 isCorrect: currentOptions[index] == getCorrectLetter(),
                                 action: {
-                                    FeedbackManager.shared.playSelectionFeedback()
+                                    feedbackManager?.playSelectionFeedback()
                                     selectLetter(currentOptions[index])
                                 }
                             )

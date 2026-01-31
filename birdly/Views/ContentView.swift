@@ -14,6 +14,7 @@ struct ContentView: View {
     @Query private var topics: [Topic]
     @Query private var allUsers: [User]
     @State private var isInitializing = true
+    @SingleValueDefaultQuery(defaultValue: Settings.getDefaultSettings()) private var userSettings: Settings
     
     private var user: User? {
         allUsers.first { $0.id == User.singletonId }
@@ -37,11 +38,13 @@ struct ContentView: View {
         .animation(.easeInOut(duration: 0.3), value: isInitializing)
         .animation(.easeInOut(duration: 0.3), value: navigationModel.hasSeenSplash)
         .environment(navigationModel)
+        .environment(\.userSettings, userSettings)
+        .environment(\.feedbackManager, FeedbackManager(userSettings))
         .task {
             // Initialize data before showing main content
             await initializeApp()
         }
-        .onChange(of: navigationModel.hasSeenSplash) { oldValue, newValue in
+        .onChange(of: navigationModel.hasSeenSplash) { _, newValue in
             // Save user data when splash screen state changes
             saveUser(hasSeenSplash: newValue)
         }
