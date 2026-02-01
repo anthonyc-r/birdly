@@ -1,0 +1,250 @@
+{
+  "_comment": "Image formats: Use 'imageName' (string) for asset catalog images (backward compatible), or 'imageSource' (object) with 'type': 'asset'/'url' and 'value' for flexible image sources. Each bird now has 3 images: perched, flight_side, and flight_underbelly.",
+  "id": "00000000-0000-0000-0000-000000000004",
+  "title": "Raptors",
+  "subtitle": "Discover the birds of prey that soar through the skies",
+  "progress": 0.0,
+  "imageName": "Raptors",
+  "birds": [
+    {
+      "id": "00000000-0000-0000-0000-000000000131",
+      "name": "Common Barn Owl",
+      "scientificName": "Tyto alba",
+      "description": "Pale owl with heart-shaped face and dark eyes. Often seen hunting at dusk and dawn over open fields.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000291",
+          "variant": "perched",
+          "imageName": "common barn owl perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000292",
+          "variant": "flight_side",
+          "imageName": "common barn owl flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000293",
+          "variant": "flight_underbelly",
+          "imageName": "common barn owl flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000132",
+      "name": "Common Buzzard",
+      "scientificName": "Buteo buteo",
+      "description": "Large bird of prey with broad wings and short tail. Often seen soaring in circles. Variable plumage from dark to pale.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000294",
+          "variant": "perched",
+          "imageName": "common buzzard perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000295",
+          "variant": "flight_side",
+          "imageName": "common buzzard flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000296",
+          "variant": "flight_underbelly",
+          "imageName": "common buzzard flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000133",
+      "name": "Common Kestrel",
+      "scientificName": "Falco tinnunculus",
+      "description": "Small falcon with long tail and pointed wings. Often hovers while hunting. Males have grey head and tail.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000297",
+          "variant": "perched",
+          "imageName": "common kestrel perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000298",
+          "variant": "flight_side",
+          "imageName": "common kestrel flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000299",
+          "variant": "flight_underbelly",
+          "imageName": "common kestrel flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000134",
+      "name": "Eurasian Hobby",
+      "scientificName": "Falco subbuteo",
+      "description": "Small, elegant falcon with long, pointed wings. Fast and agile, often seen catching dragonflies and small birds in flight.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000300",
+          "variant": "perched",
+          "imageName": "eurasian hobby perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000301",
+          "variant": "flight_side",
+          "imageName": "eurasian hobby flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000302",
+          "variant": "flight_underbelly",
+          "imageName": "eurasian hobby flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000135",
+      "name": "Eurasian Sparrowhawk",
+      "scientificName": "Accipiter nisus",
+      "description": "Small bird of prey with short, rounded wings and long tail. Excellent at maneuvering through trees. Males are smaller and bluer than females.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000303",
+          "variant": "perched",
+          "imageName": "eurasian sparrowhawk perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000304",
+          "variant": "flight_side",
+          "imageName": "eurasian sparrowhawk flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000305",
+          "variant": "flight_underbelly",
+          "imageName": "eurasian sparrowhawk flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000136",
+      "name": "Little Owl",
+      "scientificName": "Athene noctua",
+      "description": "Small, stocky owl with flat-topped head and yellow eyes. Often seen during the day, perched on posts or buildings.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000306",
+          "variant": "perched",
+          "imageName": "little owl perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000307",
+          "variant": "flight_side",
+          "imageName": "little owl flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000308",
+          "variant": "flight_underbelly",
+          "imageName": "little owl flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000137",
+      "name": "Peregrine Falcon",
+      "scientificName": "Falco peregrinus",
+      "description": "Powerful falcon with dark head and moustache stripe. Fastest bird in the world, capable of speeds over 200 mph when diving.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000309",
+          "variant": "perched",
+          "imageName": "peregrine falcon perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000310",
+          "variant": "flight_side",
+          "imageName": "peregrine falcon flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000311",
+          "variant": "flight_underbelly",
+          "imageName": "peregrine falcon flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000138",
+      "name": "Red Kite",
+      "scientificName": "Milvus milvus",
+      "description": "Large bird of prey with distinctive forked tail and reddish-brown plumage. Often seen soaring with wings held in a V-shape.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000312",
+          "variant": "perched",
+          "imageName": "red kite perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000313",
+          "variant": "flight_side",
+          "imageName": "red kite flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000314",
+          "variant": "flight_underbelly",
+          "imageName": "red kite flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000139",
+      "name": "Tawny Owl",
+      "scientificName": "Strix aluco",
+      "description": "Medium-sized owl with rounded head and dark eyes. Most common owl in Britain. Famous for its 'twit-twoo' call.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000315",
+          "variant": "perched",
+          "imageName": "tawny owl perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000316",
+          "variant": "flight_side",
+          "imageName": "tawny owl flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000317",
+          "variant": "flight_underbelly",
+          "imageName": "tawny owl flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000140",
+      "name": "Western Marsh Harrier",
+      "scientificName": "Circus aeruginosus",
+      "description": "Large harrier with long wings and tail. Males are brown with grey wings, females are dark brown. Often seen hunting low over reedbeds.",
+      "images": [
+        {
+          "id": "00000000-0000-0000-0000-000000000318",
+          "variant": "perched",
+          "imageName": "western marsh harrier perched"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000319",
+          "variant": "flight_side",
+          "imageName": "western marsh harrier flight side"
+        },
+        {
+          "id": "00000000-0000-0000-0000-000000000320",
+          "variant": "flight_underbelly",
+          "imageName": "western marsh harrier flight underbelly"
+        }
+      ],
+      "isIdentified": false
+    }
+  ]
+}
